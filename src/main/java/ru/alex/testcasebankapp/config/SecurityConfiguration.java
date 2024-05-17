@@ -65,7 +65,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/v1/auth/**")
+                        .requestMatchers("/v1/auth/**", "/v1/admin/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

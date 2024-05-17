@@ -1,4 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS bank_api;
+
 CREATE TABLE IF NOT EXISTS bank_api.t_user
 (
     id              UUID PRIMARY KEY,

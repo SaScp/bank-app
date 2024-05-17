@@ -26,7 +26,8 @@ public class AuthenticationController {
 
     private LoginService loginService;
 
-    public AuthenticationController(RegistrationService registrationService, LoginService loginService) {
+    public AuthenticationController(RegistrationService registrationService,
+                                    LoginService loginService) {
         this.registrationService = registrationService;
         this.loginService = loginService;
     }

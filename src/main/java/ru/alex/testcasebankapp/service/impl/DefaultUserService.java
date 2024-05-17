@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.alex.testcasebankapp.model.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.model.user.Email;
@@ -14,9 +15,7 @@ import ru.alex.testcasebankapp.service.UserService;
 
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +65,29 @@ public class DefaultUserService implements UserService {
                 "login", user.getLogin(),
                 "role", user.getRole()
         );
+    }
+
+    @Override
+    public List<User> searchClient(SearchEntity searchEntity) {
+        switch (searchEntity.getType()) {
+            case EMAIL -> {
+                return List.of(userRepository.findByEmails(searchEntity.getEmail())
+                        .orElseThrow(() -> new UsernameNotFoundException("user not found")));
+            }
+            case PHONE -> {
+                return List.of(userRepository.findByPhones(searchEntity.getPhone())
+                        .orElseThrow(() -> new UsernameNotFoundException("user not found")));
+            }
+            case FULLNAME -> {
+                return userRepository.findAllByFullNameIsLike(searchEntity.getFullName())
+                        .orElseThrow(() -> new RuntimeException());
+            }
+            case DATE -> {
+                return userRepository.findAllByDataOfBirthGreaterThan(searchEntity.getDate())
+                        .orElseThrow(() -> new RuntimeException());
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + searchEntity.getType());
+        }
     }
 
     private Set<Email> generateEmailEntities(Set<Email> emails, User user) {
