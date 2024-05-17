@@ -1,0 +1,32 @@
+jwt:
+  secret:
+    access: '{"kty" : "oct", "k" : "hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+    refresh: '{"kty" : "oct", "k" : "956PBFst1FguLr5irJD-aQ"}'
+spring:
+  docker:
+    compose:
+      enabled: false
+  config:
+    import: optional:file:.env[.properties]
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+  application:
+    name: test-case-bank-app
+  datasource:
+    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  data:
+    mongodb:
+      database: ${MONGO_DATABASE}
+      password: ${MONGO_PASSWORD}
+      username: ${MONGO_USERNAME}
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}?authSource=admin
+      authentication-database: admin
+logging:
+  level:
+    org.springframework.security: trace
