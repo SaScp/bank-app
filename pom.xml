@@ -106,7 +106,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <excludeDockerCompose>false</excludeDockerCompose>
                 </configuration>
             </plugin>
         </plugins>

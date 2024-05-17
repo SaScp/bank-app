@@ -1,13 +1,32 @@
+networks:
+  app-network:
+    driver: bridge
 services:
-  postgres:
-    image: 'postgres:latest'
+  db_pg:
+    image: postgres:15
+    container_name: postgres
+    networks:
+      - app-network
+    env_file:
+      - .env
+    volumes:
+      - ./src/main/resources:/docker-entrypoint-initdb.d
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - '5432'
-  redis:
-    image: 'redis:latest'
+      - 5433:5432
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
+    networks:
+      - app-network
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
     ports:
-      - '6379'
+      - 27017:27017

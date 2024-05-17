@@ -3,9 +3,6 @@ jwt:
     access: '{"kty" : "oct", "k" : "hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
     refresh: '{"kty" : "oct", "k" : "956PBFst1FguLr5irJD-aQ"}'
 spring:
-  docker:
-    compose:
-      enabled: false
   config:
     import: optional:file:.env[.properties]
   sql:
@@ -16,7 +13,7 @@ spring:
   application:
     name: test-case-bank-app
   datasource:
-    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DATABASE}
+    url: jdbc:postgresql://${HOST}:5433/${POSTGRES_DATABASE}
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver

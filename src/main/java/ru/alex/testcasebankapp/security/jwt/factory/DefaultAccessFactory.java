@@ -16,8 +16,8 @@ public class DefaultAccessFactory implements AccessFactory {
     public Token apply(Token token) {
         var now = Instant.now();
         return new Token(token.id(), token.subject(), token.authorities().stream()
-                .filter(auth -> auth.startsWith("GRAND_"))
-                .map(auth -> auth.replace("GRAND_", "")).toList(),now, now.plus(duration));
+                .filter(auth -> auth.startsWith("LEADER_"))
+                .map(auth -> auth.replace("LEADER_", "")).toList(),now, now.plus(duration));
     }
 
 }

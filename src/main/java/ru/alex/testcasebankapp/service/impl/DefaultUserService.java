@@ -36,6 +36,12 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public User findById(UUID uuid) {
+        return userRepository.findById(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+    }
+
+    @Override
     public User findByLogin(String login) {
         return userRepository.findByLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found!"));
