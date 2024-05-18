@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,9 +10,11 @@ import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
+import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
 
 
 import java.sql.*;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,7 +37,7 @@ public class DefaultTransactionService implements TransactionService {
         return Boolean.TRUE.equals(jdbcTemplate.execute((Connection connection) -> {
             try (PreparedStatement ps1 = connection.prepareStatement("SELECT current_balance FROM bank_api.t_account WHERE card = ?");
                  PreparedStatement ps2 = connection.prepareStatement("UPDATE bank_api.t_account SET current_balance = ? WHERE card = ?");
-                 PreparedStatement transaction = connection.prepareStatement("INSERT INTO transactions (id, from_user_id, to_user_id, amount, created_at) VALUES (?, ?, ?, ?, ?)")) {
+                 PreparedStatement transaction = connection.prepareStatement("INSERT INTO bank_api.t_transaction (id, from_user_card, to_user_card, amount, created_at) VALUES (?, ?, ?, ?, ?)")) {
                 connection.setAutoCommit(false);
 
                 // Get balance of sender
@@ -92,6 +95,9 @@ public class DefaultTransactionService implements TransactionService {
         }));
     }
 
+    public List<JsonNode> getTransactions() {
+        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction", new JsonNodeRowMapper());
+    }
 
     @Scheduled(fixedRate = 60000)
     @Async

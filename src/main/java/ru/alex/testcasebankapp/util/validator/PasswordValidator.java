@@ -19,7 +19,7 @@ public class PasswordValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        final var user = (User) target;
+        final var user = (UserDto) target;
 
         if (!user.getPassword().matches(passwordRegex)) {
             errors.rejectValue("password", "500", "password is invalid");

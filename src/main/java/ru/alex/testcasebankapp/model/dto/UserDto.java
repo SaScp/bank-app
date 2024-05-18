@@ -33,4 +33,7 @@ public class UserDto {
     @JsonProperty("phones")
     @NotNull(groups = {Registration.class})
     private List<PhoneDto> phones;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private AccountDto account;
 }

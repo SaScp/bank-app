@@ -54,7 +54,7 @@ public class GenerateData {
     public static String generateNumberCard() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 16; i++) {
-            builder.append(new Random().nextInt());
+            builder.append(new Random().nextInt(10));
         }
         return builder.toString();
     }

@@ -14,9 +14,7 @@ import java.util.UUID;
 @Table(name = "t_user", schema = "bank_api")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class User extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false)
@@ -46,6 +44,10 @@ public class User extends BaseEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Account account;
+
+    public User() {
+
+    }
 
     @Override
     public final boolean equals(Object object) {

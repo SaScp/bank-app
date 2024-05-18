@@ -28,31 +28,28 @@ import java.util.Set;
 @Service
 public class DefaultAdminService implements AdminService {
 
+    private final ModelMapper modelMapper;
     private UserRepository userRepository;
 
     private JwtService jwtService;
 
-    private List<Validator> validators;
+    private PasswordEncoder passwordEncoder;
 
-    public DefaultAdminService(UserRepository userRepository, JwtService jwtService, List<Validator> validators) {
+    public DefaultAdminService(UserRepository userRepository, JwtService jwtService, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
-        this.validators = validators;
+        this.passwordEncoder = passwordEncoder;
+
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public Tokens create(UserAdminDto userAdminDto, BindingResult bindingResult) {
-        User user = User.builder()
-                .login(userAdminDto.getLogin())
-                .role("ROLE_USER")
-                .fullName(userAdminDto.getLogin())
-                .password(userAdminDto.getPassword())
-                .dataOfBirth(LocalDateTime.now())
-                .build();
-
-        for (var i : validators) {
-            i.validate(user, bindingResult);
-        }
+        User user = modelMapper.map(userAdminDto, User.class);
+        user.setRole("ROLE_USER");
+        user.setFullName(userAdminDto.getLogin());
+        user.setDataOfBirth(LocalDateTime.now());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (bindingResult.hasErrors()) {
             throw new LoginException(bindingResult.getFieldError().getDefaultMessage());

@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS bank_api.t_email
 CREATE TABLE IF NOT EXISTS bank_api.t_transaction
 (
     id           UUID PRIMARY KEY,
-    from_user_id UUID           NOT NULL REFERENCES bank_api.t_user (id),
-    to_user_id   UUID           NOT NULL REFERENCES bank_api.t_user (id),
+    from_user_card VARCHAR(255)         NOT NULL REFERENCES bank_api.t_account (card),
+    to_user_card   VARCHAR(255)         NOT NULL REFERENCES bank_api.t_account (card),
     amount       NUMERIC(15, 2) NOT NULL CHECK (amount > 0),
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
