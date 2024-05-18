@@ -114,6 +114,10 @@ public class DefaultUserService implements UserService {
     }
 
     private String generateNumberCard() {
-        return "";
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 16; i++) {
+            builder.append(new Random().nextInt());
+        }
+        return builder.toString();
     }
 }

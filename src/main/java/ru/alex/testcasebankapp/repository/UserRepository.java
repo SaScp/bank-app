@@ -24,7 +24,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select user from User user join user.phones p where :phone = p.phone")
     Optional<User> findByPhone(@Param("phone") String phone);
 
-    Optional<List<User>> findAllByFullNameIsLike(String name);
+    @Query("select user from User user where user.fullName like :name")
+    Optional<List<User>> findAllByFullNameIsLike(@Param("name") String name);
 
     Optional<List<User>> findAllByDataOfBirthGreaterThan(LocalDateTime localDateTime);
 
