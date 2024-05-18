@@ -33,6 +33,6 @@ public class AdminController {
 
     @GetMapping("/transaction")
     public List<JsonNode> getTransaction() {
-        return transactionService.getTransactions();
+        return transactionService.getAllTransactions();
     }
 }

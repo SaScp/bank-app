@@ -9,5 +9,6 @@ import java.util.List;
 public interface TransactionService {
     boolean transferMoney(Authentication fromAuthentication, AmountEntity amountEntity);
     void updateBalance();
-    List<JsonNode> getTransactions();
+    List<JsonNode> getAllTransactions();
+    List<JsonNode> getUserTransaction(Authentication authentication);
 }

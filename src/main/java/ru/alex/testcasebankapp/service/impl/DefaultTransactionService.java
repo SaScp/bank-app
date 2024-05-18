@@ -95,9 +95,16 @@ public class DefaultTransactionService implements TransactionService {
         }));
     }
 
-    public List<JsonNode> getTransactions() {
+    public List<JsonNode> getAllTransactions() {
         return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction", new JsonNodeRowMapper());
     }
+
+    @Override
+    public List<JsonNode> getUserTransaction(Authentication authentication) {
+        String card = userService.findByLogin(authentication.getName()).getAccount().getCard();
+        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction WHERE from_user_card=? or to_user_card=?", new JsonNodeRowMapper(), card, card);
+    }
+
 
     @Scheduled(fixedRate = 60000)
     @Async

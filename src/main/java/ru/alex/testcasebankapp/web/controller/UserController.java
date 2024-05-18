@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.web.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,5 +53,10 @@ public class UserController {
                                     @SearchParam PaginationEntity paginationEntity) {
         return userService.searchClient(searchEntity, paginationEntity).stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).toList();
+    }
+
+    @GetMapping("/transaction")
+    public List<JsonNode> getTransaction(Authentication authentication) {
+        return transactionService.getUserTransaction(authentication);
     }
 }
