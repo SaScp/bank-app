@@ -71,11 +71,11 @@ public class DefaultUserService implements UserService {
     public List<User> searchClient(SearchEntity searchEntity) {
         switch (searchEntity.getType()) {
             case EMAIL -> {
-                return List.of(userRepository.findByEmails(searchEntity.getEmail())
+                return List.of(userRepository.findByEmailsIn(searchEntity.getEmail())
                         .orElseThrow(() -> new UsernameNotFoundException("user not found")));
             }
             case PHONE -> {
-                return List.of(userRepository.findByPhones(searchEntity.getPhone())
+                return List.of(userRepository.findByPhone(searchEntity.getPhone())
                         .orElseThrow(() -> new UsernameNotFoundException("user not found")));
             }
             case FULLNAME -> {

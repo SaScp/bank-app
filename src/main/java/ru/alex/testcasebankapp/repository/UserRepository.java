@@ -10,6 +10,7 @@ import ru.alex.testcasebankapp.model.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -17,11 +18,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByLogin(String login);
 
-    @Query("select user from User user where ?1 in user.emails")
-    Optional<User> findByEmails(String email);
+    @Query("select user from User user join user.emails e where :email = e.email")
+    Optional<User> findByEmailsIn(@Param("email") String email);
 
-    @Query("select user from User user where ?1 in user.phones")
-    Optional<User> findByPhones(String phone);
+    @Query("select user from User user join user.phones p where :phone = p.phone")
+    Optional<User> findByPhone(@Param("phone") String phone);
 
     Optional<List<User>> findAllByFullNameIsLike(String name);
 
