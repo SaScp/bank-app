@@ -6,10 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.alex.testcasebankapp.model.AmountEntity;
+import ru.alex.testcasebankapp.model.PaginationEntity;
 import ru.alex.testcasebankapp.model.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
+import ru.alex.testcasebankapp.util.SearchParam;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +50,9 @@ public class UserController {
     @GetMapping(value = "/search",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDto> searchUser(@RequestBody SearchEntity searchEntity) {
-        return userService.searchClient(searchEntity).stream()
+    public List<UserDto> searchUser(@RequestBody SearchEntity searchEntity,
+                                    @SearchParam PaginationEntity paginationEntity) {
+        return userService.searchClient(searchEntity, paginationEntity).stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).toList();
     }
 }

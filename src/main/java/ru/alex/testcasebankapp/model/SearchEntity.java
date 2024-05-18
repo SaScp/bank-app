@@ -15,6 +15,10 @@ public class SearchEntity {
 
     private String email;
 
+    private int pageSize;
+
+    private int pageNumber;
+
     public SearchType getType() {
         if (email != null) {
             return SearchType.EMAIL;

@@ -1,6 +1,7 @@
 package ru.alex.testcasebankapp.service;
 
 
+import ru.alex.testcasebankapp.model.PaginationEntity;
 import ru.alex.testcasebankapp.model.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.User;
@@ -13,5 +14,5 @@ public interface UserService {
     User findById(UUID uuid);
     User findByLogin(String login);
     Map<String, String> save(UserDto userDto);
-    List<User> searchClient(SearchEntity searchEntity);
+    List<User> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity);
 }

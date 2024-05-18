@@ -15,8 +15,5 @@ public class TestCaseBankAppApplication {
         app.setDefaultProperties(Collections.singletonMap("spring.config.location", "classpath:/application-dev.yaml"));
         app.run(args);
     }
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+
 }

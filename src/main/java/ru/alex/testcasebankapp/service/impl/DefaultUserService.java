@@ -1,9 +1,12 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.alex.testcasebankapp.model.PaginationEntity;
 import ru.alex.testcasebankapp.model.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Account;
@@ -68,7 +71,9 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<User> searchClient(SearchEntity searchEntity) {
+    public List<User> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity) {
+
+
         switch (searchEntity.getType()) {
             case EMAIL -> {
                 return List.of(userRepository.findByEmailsIn(searchEntity.getEmail())
@@ -79,14 +84,31 @@ public class DefaultUserService implements UserService {
                         .orElseThrow(() -> new UsernameNotFoundException("user not found")));
             }
             case FULLNAME -> {
-                return userRepository.findAllByFullNameIsLike(searchEntity.getFullName())
+                return userRepository.findAllByFullNameIsLike(searchEntity.getFullName(),
+                                generatePageRequest(paginationEntity))
                         .orElseThrow(() -> new RuntimeException());
             }
             case DATE -> {
-                return userRepository.findAllByDataOfBirthGreaterThan(searchEntity.getDate())
+                return userRepository.findAllByDataOfBirthGreaterThan(searchEntity.getDate(),
+                                generatePageRequest(paginationEntity))
                         .orElseThrow(() -> new RuntimeException());
             }
             default -> throw new IllegalStateException("Unexpected value: " + searchEntity.getType());
+        }
+    }
+
+    private PageRequest generatePageRequest(PaginationEntity paginationEntity) {
+        if (paginationEntity.getPropertySort().isEmpty()) {
+            return PageRequest.of(
+                    paginationEntity.getPageNumber(),
+                    paginationEntity.getPageSize()
+            );
+        } else {
+            return PageRequest.of(
+                    paginationEntity.getPageNumber(),
+                    paginationEntity.getPageSize(),
+                    Sort.by(paginationEntity.getPropertySort())
+            );
         }
     }
 
