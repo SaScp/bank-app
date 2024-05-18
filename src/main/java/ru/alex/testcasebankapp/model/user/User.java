@@ -3,7 +3,7 @@ package ru.alex.testcasebankapp.model.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.alex.testcasebankapp.model.BaseEntity;
+import ru.alex.testcasebankapp.model.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,6 +14,8 @@ import java.util.UUID;
 @Table(name = "t_user", schema = "bank_api")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class User extends BaseEntity {
     @Id

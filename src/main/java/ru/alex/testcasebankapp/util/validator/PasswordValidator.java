@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.alex.testcasebankapp.model.dto.UserDto;
+import ru.alex.testcasebankapp.model.user.User;
 
 
 @Component
@@ -18,7 +19,7 @@ public class PasswordValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        final var user = (UserDto) target;
+        final var user = (User) target;
 
         if (!user.getPassword().matches(passwordRegex)) {
             errors.rejectValue("password", "500", "password is invalid");

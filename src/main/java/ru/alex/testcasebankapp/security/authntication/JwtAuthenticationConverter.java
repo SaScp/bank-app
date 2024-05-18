@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 import ru.alex.testcasebankapp.security.jwt.deserializer.AccessTokenJwsStringDeserializer;
 import ru.alex.testcasebankapp.security.jwt.deserializer.RefreshTokenJwsStringDeserializer;
 

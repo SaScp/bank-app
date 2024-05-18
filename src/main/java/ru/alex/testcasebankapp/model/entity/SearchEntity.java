@@ -1,6 +1,7 @@
-package ru.alex.testcasebankapp.model;
+package ru.alex.testcasebankapp.model.entity;
 
 import lombok.Data;
+import ru.alex.testcasebankapp.model.SearchType;
 
 import java.time.LocalDateTime;
 

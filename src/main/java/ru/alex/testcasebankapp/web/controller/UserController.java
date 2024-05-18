@@ -5,17 +5,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.alex.testcasebankapp.model.AmountEntity;
-import ru.alex.testcasebankapp.model.PaginationEntity;
-import ru.alex.testcasebankapp.model.SearchEntity;
+import ru.alex.testcasebankapp.model.entity.AmountEntity;
+import ru.alex.testcasebankapp.model.entity.PaginationEntity;
+import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.util.SearchParam;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")

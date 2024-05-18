@@ -1,8 +1,8 @@
 package ru.alex.testcasebankapp.service;
 
 
-import ru.alex.testcasebankapp.model.PaginationEntity;
-import ru.alex.testcasebankapp.model.SearchEntity;
+import ru.alex.testcasebankapp.model.entity.PaginationEntity;
+import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.User;
 

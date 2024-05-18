@@ -1,4 +1,4 @@
-package ru.alex.testcasebankapp.model;
+package ru.alex.testcasebankapp.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

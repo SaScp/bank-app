@@ -3,13 +3,13 @@ package ru.alex.testcasebankapp.config;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.annotation.RequestParamMethodArgumentResolver;
-import ru.alex.testcasebankapp.model.PaginationEntity;
+import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.util.SearchParam;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchParamResolver extends RequestParamMethodArgumentResolver {
 
@@ -31,8 +31,8 @@ public class SearchParamResolver extends RequestParamMethodArgumentResolver {
         String propertySort = Optional.ofNullable(request.getParameter("sort-param")).orElse("");
 
         if (propertySort.equals("emails") || propertySort.equals("phones") ||
-            Arrays.binarySearch(Arrays.stream(User.class.getFields())
-                    .map(Field::getName).toArray(), propertySort) < 0) {
+                !Arrays.stream(User.class.getDeclaredFields())
+                        .map(Field::getName).collect(Collectors.toSet()).contains(propertySort)) {
             propertySort = "";
         }
         return PaginationEntity.builder()

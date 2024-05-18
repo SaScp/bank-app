@@ -13,7 +13,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.alex.testcasebankapp.model.Logout;
+import ru.alex.testcasebankapp.model.entity.Logout;
 import ru.alex.testcasebankapp.repository.LogoutRepository;
 import ru.alex.testcasebankapp.security.authntication.TokenUser;
 

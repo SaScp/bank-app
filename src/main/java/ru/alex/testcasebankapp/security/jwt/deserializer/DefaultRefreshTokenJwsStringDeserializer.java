@@ -5,7 +5,7 @@ import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.extern.slf4j.Slf4j;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 
 
 import java.text.ParseException;

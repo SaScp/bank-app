@@ -2,7 +2,7 @@ package ru.alex.testcasebankapp.service.impl;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 import ru.alex.testcasebankapp.model.response.Tokens;
 import ru.alex.testcasebankapp.security.jwt.factory.AccessFactory;
 import ru.alex.testcasebankapp.security.jwt.factory.DefaultAccessFactory;

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 import ru.alex.testcasebankapp.repository.LogoutRepository;
 
 

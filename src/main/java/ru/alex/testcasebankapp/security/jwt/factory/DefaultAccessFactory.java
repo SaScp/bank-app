@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.Instant;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 
 
 @Setter

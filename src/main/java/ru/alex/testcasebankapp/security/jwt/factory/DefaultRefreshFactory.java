@@ -2,7 +2,7 @@ package ru.alex.testcasebankapp.security.jwt.factory;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 
 
 import java.time.Duration;

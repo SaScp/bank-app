@@ -1,5 +1,5 @@
 package ru.alex.testcasebankapp.security.jwt.deserializer;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 
 
 

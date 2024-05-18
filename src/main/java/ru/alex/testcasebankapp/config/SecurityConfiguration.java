@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/v1/auth/**", "/v1/admin/**")
                         .permitAll()
                         .anyRequest()
-                        .authenticated()
+                        .hasRole("USER")
         );
 
 

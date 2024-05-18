@@ -15,7 +15,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.alex.testcasebankapp.model.Token;
+import ru.alex.testcasebankapp.model.entity.Token;
 import ru.alex.testcasebankapp.model.response.Tokens;
 import ru.alex.testcasebankapp.security.authntication.TokenUser;
 import ru.alex.testcasebankapp.security.jwt.factory.AccessFactory;

@@ -62,7 +62,6 @@ public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer,
 
         DeniedRequestFilter deniedRequestFilter = new DeniedRequestFilter();
 
-
         builder.addFilterBefore(authenticationFilter, CsrfFilter.class)
                 .addFilterBefore(refreshTokenFilter, ExceptionTranslationFilter.class)
                 .addFilterAfter(jwtLogoutFilter, ExceptionTranslationFilter.class)
