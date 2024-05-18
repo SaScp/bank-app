@@ -18,6 +18,7 @@ import ru.alex.testcasebankapp.repository.UserRepository;
 import ru.alex.testcasebankapp.service.AdminService;
 import ru.alex.testcasebankapp.service.JwtService;
 import ru.alex.testcasebankapp.util.exception.LoginException;
+import ru.alex.testcasebankapp.util.exception.SavedException;
 import ru.alex.testcasebankapp.util.generator.GenerateData;
 
 import java.time.LocalDateTime;
@@ -52,15 +53,15 @@ public class DefaultAdminService implements AdminService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (bindingResult.hasErrors()) {
-            throw new LoginException(bindingResult.getFieldError().getDefaultMessage());
+            throw new SavedException(bindingResult.getFieldError().getDefaultMessage());
         }
-        user.setEmails(GenerateData.generateEmailEntities(Set.of(Email.builder()
+        user.setEmails(GenerateData.generateEmailEntities(List.of(Email.builder()
                 .email(userAdminDto.getEmail()).build()), user));
 
-        user.setPhones(GenerateData.generatePhoneEntities(Set.of(Phone.builder()
+        user.setPhones(GenerateData.generatePhoneEntities(List.of(Phone.builder()
                 .phone(userAdminDto.getPhone()).build()), user));
 
-        user.setAccount(GenerateData.generateAccountEntity(user, userAdminDto.getInitBalance()));
+        user.setAccount(GenerateData.generateAccountEntity(user, userAdminDto.getInitBalance() > 0? userAdminDto.getInitBalance() : 0));
 
         userRepository.save(user);
 

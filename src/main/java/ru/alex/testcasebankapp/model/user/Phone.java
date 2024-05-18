@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.alex.testcasebankapp.model.dto.PhoneDto;
 
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "t_phone", schema = "bank_api")
-public class Phone {
+public class Phone implements Comparable<PhoneDto> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -27,4 +28,9 @@ public class Phone {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @Override
+    public int compareTo(PhoneDto o) {
+        return this.phone.compareTo(o.getOldPhone());
+    }
 }

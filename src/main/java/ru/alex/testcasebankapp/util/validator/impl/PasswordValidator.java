@@ -1,14 +1,15 @@
-package ru.alex.testcasebankapp.util.validator;
+package ru.alex.testcasebankapp.util.validator.impl;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import ru.alex.testcasebankapp.model.dto.UserDto;
-import ru.alex.testcasebankapp.model.user.User;
+import ru.alex.testcasebankapp.util.validator.DataValidator;
+
+import java.util.Optional;
 
 
 @Component
-public class PasswordValidator implements Validator {
+public class PasswordValidator implements DataValidator {
     private final static String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
 
 
@@ -21,7 +22,7 @@ public class PasswordValidator implements Validator {
     public void validate(Object target, Errors errors) {
         final var user = (UserDto) target;
 
-        if (!user.getPassword().matches(passwordRegex)) {
+        if (Optional.ofNullable(user.getPassword()).isPresent() && !user.getPassword().matches(passwordRegex)) {
             errors.rejectValue("password", "500", "password is invalid");
         }
     }

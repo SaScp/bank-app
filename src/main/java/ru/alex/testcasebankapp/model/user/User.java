@@ -6,9 +6,7 @@ import org.hibernate.proxy.HibernateProxy;
 import ru.alex.testcasebankapp.model.entity.BaseEntity;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "t_user", schema = "bank_api")
@@ -37,16 +35,23 @@ public class User extends BaseEntity {
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Email> emails;
+    private List<Email> emails = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Phone> phones;
+    private List<Phone> phones = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Account account;
 
     public User() {
 
+    }
+
+    public void addEmail(Email email) {
+        this.emails.add(email);
+    }
+    public void addPhone(Phone phone) {
+        this.phones.add(phone);
     }
 
     @Override

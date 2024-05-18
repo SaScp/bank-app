@@ -11,6 +11,7 @@ import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
+import ru.alex.testcasebankapp.util.exception.TransactionException;
 
 
 import java.sql.*;
@@ -64,7 +65,7 @@ public class DefaultTransactionService implements TransactionService {
                 rs = ps1.executeQuery();
                 if (!rs.next()) {
                     connection.rollback();
-                    throw new RuntimeException("Receiver card not found");
+                    throw new TransactionException("Receiver card not found");
                 }
                 double toUserBalance = rs.getDouble(1);
 
@@ -89,8 +90,7 @@ public class DefaultTransactionService implements TransactionService {
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
-                e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new TransactionException("transaction error");
             }
         }));
     }

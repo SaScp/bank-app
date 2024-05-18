@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
@@ -58,5 +59,30 @@ public class UserController {
     @GetMapping("/transaction")
     public List<JsonNode> getTransaction(Authentication authentication) {
         return transactionService.getUserTransaction(authentication);
+    }
+    @PostMapping("/update")
+    public ResponseEntity<Void> update(@RequestBody UserDto userDto,
+                          Authentication authentication,
+                          BindingResult bindingResult) {
+       return ResponseEntity
+               .status(userService.update(userDto, authentication, bindingResult) ? 200 : 400)
+               .build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Void> add(@RequestBody UserDto userDto,
+                                       Authentication authentication,
+                                       BindingResult bindingResult) {
+        return ResponseEntity
+                .status(userService.add(userDto, authentication, bindingResult) ? 200 : 400)
+                .build();
+    }
+    @PostMapping("/delete")
+    public ResponseEntity<Void> delete(@RequestBody UserDto userDto,
+                                    Authentication authentication,
+                                    BindingResult bindingResult) {
+        return ResponseEntity
+                .status(userService.delete(userDto, authentication, bindingResult) ? 200 : 400)
+                .build();
     }
 }

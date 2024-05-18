@@ -8,6 +8,7 @@ import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.Phone;
 import ru.alex.testcasebankapp.model.user.User;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,18 +29,18 @@ public class GenerateData {
         }
     }
 
-    public static Set<Email> generateEmailEntities(Set<Email> emails, User user) {
+    public static List<Email> generateEmailEntities(List<Email> emails, User user) {
         return emails.stream().map(email -> {
             email.setUser(user);
             return email;
-        }).collect(Collectors.toSet());
+        }).toList();
     }
 
-    public static Set<Phone> generatePhoneEntities(Set<Phone> phones, User user) {
+    public static List<Phone> generatePhoneEntities(List<Phone> phones, User user) {
         return phones.stream().map(email -> {
             email.setUser(user);
             return email;
-        }).collect(Collectors.toSet());
+        }).toList();
     }
 
     public static Account generateAccountEntity(User user, int currentBalance) {
