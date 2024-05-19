@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class DefaultAdminService implements AdminService {
 
@@ -53,6 +55,7 @@ public class DefaultAdminService implements AdminService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (bindingResult.hasErrors()) {
+            log.error("::SavedException:: \"user not saved because: {}\"", bindingResult.getFieldError().getDefaultMessage());
             throw new SavedException(bindingResult.getFieldError().getDefaultMessage());
         }
         user.setEmails(GenerateData.generateEmailEntities(List.of(Email.builder()

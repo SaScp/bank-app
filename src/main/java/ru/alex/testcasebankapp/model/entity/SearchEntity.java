@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.alex.testcasebankapp.model.SearchType;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 public class SearchEntity {
@@ -21,17 +22,19 @@ public class SearchEntity {
     private int pageNumber;
 
     public SearchType getType() {
-        if (email != null) {
+        if (Optional.ofNullable(this.email).isPresent()) {
             return SearchType.EMAIL;
         }
-        if (phone != null) {
+        if (Optional.ofNullable(this.phone).isPresent()) {
             return SearchType.PHONE;
         }
-        if(date != null) {
+        if(Optional.ofNullable(this.date).isPresent()) {
             return SearchType.DATE;
         }
-        else  {
+        if(Optional.ofNullable(this.fullName).isPresent())  {
             return SearchType.FULLNAME;
+        } else {
+            return SearchType.NONE;
         }
     }
 }

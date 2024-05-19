@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class DefaultRegistrationService implements RegistrationService {
 
@@ -40,16 +42,19 @@ public class DefaultRegistrationService implements RegistrationService {
         validators.validate(userDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            log.error("::RegistrationException::\"user not registration because: {} \"", bindingResult.getFieldError().getDefaultMessage());
             throw new RegistrationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         Map<String, String> authenticationData = this.userService.save(userDto, bindingResult);
+
 
         Authentication authentication =
                 new PreAuthenticatedAuthenticationToken(authenticationData.get("login"),
                         "nopassword",
                         Collections.singleton(new SimpleGrantedAuthority(authenticationData.get("role"))));
 
+        log.info("user {} registration", authenticationData.get("login"));
 
         return jwtService.createTokens(authentication);
     }

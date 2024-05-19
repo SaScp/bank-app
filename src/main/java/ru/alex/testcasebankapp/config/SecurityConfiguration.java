@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,7 @@ import ru.alex.testcasebankapp.security.jwt.serializer.RefreshTokenJweStringSeri
 
 import java.text.ParseException;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -65,7 +67,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/v1/auth/**", "/v1/admin/**")
+                        .requestMatchers("/v1/auth/**", "/v1/admin/**", "/swagger-doc/**")
                         .permitAll()
                         .anyRequest()
                         .hasRole("USER")
@@ -78,6 +80,7 @@ public class SecurityConfiguration {
 
         http.apply(requestConfigurer);
 
+        log.info("configure {} successful", this.getClass());
         return http.build();
     }
 

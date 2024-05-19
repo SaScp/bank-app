@@ -6,6 +6,7 @@ import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.EmailRepository;
+import ru.alex.testcasebankapp.util.exception.LastElementException;
 
 import java.util.*;
 
@@ -23,6 +24,9 @@ public class EmailDeleteComponent implements DeleteComponent{
     public void execute(UserDto updateUserDto, User user) {
         List<UUID> idDeleteEmails = new ArrayList<>();
         if (Optional.ofNullable(updateUserDto.getEmails()).isPresent()) {
+            if (user.getEmails().size() == 1) {
+                throw new LastElementException("user must be 1 email!");
+            }
             List<String> emails = updateUserDto.getEmails().stream()
                     .map(EmailDto::getEmail)
                     .filter(Objects::nonNull)
@@ -30,9 +34,6 @@ public class EmailDeleteComponent implements DeleteComponent{
 
             if (!emails.isEmpty()) {
                 List<Email> emailEntities = emailRepository.findAllByEmailInAndUser(emails, user);
-                if (emailEntities.size() == 1) {
-                    return;
-                }
                 idDeleteEmails = emailEntities.stream()
                         .map(Email::getId)
                         .toList();

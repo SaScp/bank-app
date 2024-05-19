@@ -10,6 +10,7 @@ import ru.alex.testcasebankapp.util.exception.TransactionException;
 public class TransactionExceptionHandler implements ExceptionHandlerStrategy {
     @Override
     public ProblemDetail execute(RuntimeException e) {
+
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 

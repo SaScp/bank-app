@@ -4,6 +4,7 @@ import ch.qos.logback.core.LogbackException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,7 +34,9 @@ public class GlobalAdviceController {
             TransactionException.class,
             UpdateException.class,
             UsernameNotFoundException.class,
-            BadCredentialsException.class
+            BadCredentialsException.class,
+            LastElementException.class,
+            InsufficientFundsException.class
     })
     public ResponseEntity<ProblemDetail> exHandler(RuntimeException e) {
         ProblemDetail problemDetail = handlerStrategy.get(e.getClass()).execute(e);

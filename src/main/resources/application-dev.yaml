@@ -25,5 +25,11 @@ spring:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}?authSource=admin
       authentication-database: admin
 logging:
-  level:
-    org.springframework.security: trace
+  file:
+    name: log/app.log
+    path: /
+springdoc:
+  swagger-ui:
+    path: /swagger-doc/swagger-ui.html
+  api-docs:
+    path:  /swagger-doc/api-docs

@@ -20,4 +20,5 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
 }

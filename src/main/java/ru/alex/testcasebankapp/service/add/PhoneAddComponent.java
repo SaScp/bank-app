@@ -20,8 +20,10 @@ public class PhoneAddComponent implements AddComponent {
 
     @Override
     public void execute(UserDto updateUserDto, User user) {
+        if (Optional.ofNullable(updateUserDto.getPhones()).isPresent()) {
         phoneRepository.saveAll(updateUserDto.getPhones().stream()
                 .filter(phoneDto -> Optional.ofNullable(phoneDto.getPhone()).isPresent())
                 .map(el -> Phone.builder().phone(el.getPhone()).user(user).build()).toList());
     }
+        }
 }

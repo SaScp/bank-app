@@ -1,5 +1,10 @@
 package ru.alex.testcasebankapp.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +22,7 @@ import ru.alex.testcasebankapp.service.RegistrationService;
 
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -35,11 +41,40 @@ public class AuthenticationController {
     @PostMapping(value = "/registration",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
+
+    @Operation(summary = "Позволяет зарегистрироваться в системе",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
+            @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserDto.class))
+            ),
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "user login",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Tokens.class)
+                    )
+            )
+    )
     public ResponseEntity<Tokens> registration(@Validated({Registration.class}) @RequestBody UserDto userDto, BindingResult bindingResult) {
         return ResponseEntity.created(URI.create("/v1/auth/registration"))
                 .body(registrationService.registration(userDto, bindingResult));
     }
 
+    @Operation(summary = "Позволяет залогиниться",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
+            @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserDto.class))
+            ),
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "user login",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Tokens.class)
+                    )
+            )
+    )
     @PostMapping(value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

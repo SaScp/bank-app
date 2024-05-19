@@ -1,6 +1,7 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,6 +12,7 @@ import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
+import ru.alex.testcasebankapp.util.exception.InsufficientFundsException;
 import ru.alex.testcasebankapp.util.exception.TransactionException;
 
 
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class DefaultTransactionService implements TransactionService {
 
     private UserService userService;
@@ -52,7 +55,7 @@ public class DefaultTransactionService implements TransactionService {
 
                 if (fromUserBalance < amount) {
                     connection.rollback();
-                    return false;
+                    throw new InsufficientFundsException("insufficient funds");
                 }
 
                 // Update balance of sender
@@ -75,7 +78,8 @@ public class DefaultTransactionService implements TransactionService {
                 ps2.executeUpdate();
 
                 // Insert transaction record
-                transaction.setObject(1, UUID.randomUUID());
+                UUID transactionId = UUID.randomUUID();
+                transaction.setObject(1,transactionId);
                 transaction.setString(2, account.getCard());
                 transaction.setString(3, toCard);
                 transaction.setDouble(4, amount);
@@ -83,6 +87,7 @@ public class DefaultTransactionService implements TransactionService {
                 transaction.executeUpdate();
 
                 connection.commit();
+                log.info("transaction with id: {} registration!", transactionId);
                 return true;
             } catch (Exception e) {
                 try {
@@ -90,19 +95,20 @@ public class DefaultTransactionService implements TransactionService {
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
-                throw new TransactionException("transaction error");
+                log.error("::TransactionException:: \"transaction failed, error message: {}\"", e.getMessage());
+                throw new TransactionException(e.getMessage());
             }
         }));
     }
 
     public List<JsonNode> getAllTransactions() {
-        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction", new JsonNodeRowMapper());
+        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction ORDER BY created_at DESC", new JsonNodeRowMapper());
     }
 
     @Override
     public List<JsonNode> getUserTransaction(Authentication authentication) {
         String card = userService.findByLogin(authentication.getName()).getAccount().getCard();
-        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction WHERE from_user_card=? or to_user_card=?", new JsonNodeRowMapper(), card, card);
+        return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction WHERE from_user_card=? or to_user_card=? ORDER BY created_at DESC", new JsonNodeRowMapper(), card, card);
     }
 
 

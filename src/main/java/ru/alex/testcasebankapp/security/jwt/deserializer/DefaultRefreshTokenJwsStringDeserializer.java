@@ -32,7 +32,7 @@ public class DefaultRefreshTokenJwsStringDeserializer implements RefreshTokenJws
                     claimsSet.getIssueTime().toInstant(),
                     claimsSet.getExpirationTime().toInstant());
         } catch (ParseException | JOSEException e) {
-            log.error(e.getMessage(), e);
+            log.error("token not parsed because: {}", e.getMessage());
         }
         return null;
     }

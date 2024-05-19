@@ -19,8 +19,10 @@ public class EmailAddComponent implements AddComponent {
 
     @Override
     public void execute(UserDto updateUserDto, User user) {
-        emailRepository.saveAll(updateUserDto.getEmails().stream()
-                .filter(emailDto -> Optional.ofNullable(emailDto.getEmail()).isPresent())
-                .map(el -> Email.builder().email(el.getEmail()).user(user).build()).toList());
+        if (Optional.ofNullable(updateUserDto.getEmails()).isPresent()) {
+            emailRepository.saveAll(updateUserDto.getEmails().stream()
+                    .filter(emailDto -> Optional.ofNullable(emailDto.getEmail()).isPresent())
+                    .map(el -> Email.builder().email(el.getEmail()).user(user).build()).toList());
+        }
     }
 }

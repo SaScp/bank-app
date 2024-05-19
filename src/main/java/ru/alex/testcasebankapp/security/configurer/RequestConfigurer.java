@@ -1,11 +1,13 @@
 package ru.alex.testcasebankapp.security.configurer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -23,6 +25,7 @@ import ru.alex.testcasebankapp.security.jwt.serializer.AccessTokenJwsStringSeria
 import ru.alex.testcasebankapp.security.jwt.serializer.RefreshTokenJweStringSerializer;
 
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer, HttpSecurity> {
@@ -44,13 +47,12 @@ public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer,
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
-
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
         AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager,
                 new JwtAuthenticationConverter(refreshTokenJwsStringDeserializer, accessTokenJwsStringDeserializer));
         authenticationFilter.setSuccessHandler((request, response, authentication) -> CsrfFilter.skipRequest(request));
-        authenticationFilter.setFailureHandler((request, response, exception) -> response.sendError(HttpStatus.FORBIDDEN.value()));
+        authenticationFilter.setFailureHandler(new AuthenticationEntryPointFailureHandler(((request, response, authException) -> response.sendError(HttpStatus.FORBIDDEN.value()))));
         PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(new TokenAuthUserDetailsService(this.logoutRepository));
 
@@ -67,6 +69,7 @@ public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer,
                 .addFilterAfter(jwtLogoutFilter, ExceptionTranslationFilter.class)
                 .addFilterBefore(deniedRequestFilter, DisableEncodeUrlFilter.class)
                 .authenticationProvider(authenticationProvider);
+        log.info("configure {} successful", this.getClass());
     }
 
     public RequestConfigurer accessTokenJwsStringSerializer(AccessTokenJwsStringSerializer accessTokenJwsStringSerializer) {

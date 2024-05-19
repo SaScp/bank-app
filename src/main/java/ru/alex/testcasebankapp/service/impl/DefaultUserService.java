@@ -1,6 +1,7 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,7 @@ import ru.alex.testcasebankapp.util.validator.DataValidator;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class DefaultUserService implements UserService {
@@ -75,6 +77,7 @@ public class DefaultUserService implements UserService {
     public Map<String, String> save(UserDto userDto, BindingResult bindingResult) {
         validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
+            log.error("::SavedException:: \"user not saved because: {}\"", bindingResult.getFieldError().getDefaultMessage());
             throw new SavedException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         User user = modelMapper.map(userDto, User.class);
@@ -98,8 +101,6 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<User> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity) {
-
-
         switch (searchEntity.getType()) {
             case EMAIL -> {
                 return List.of(userRepository.findByEmailsIn(searchEntity.getEmail())
@@ -119,7 +120,9 @@ public class DefaultUserService implements UserService {
                                 GenerateData.generatePageRequest(paginationEntity))
                         .orElseThrow(() -> new RuntimeException());
             }
-            default -> throw new IllegalStateException("Unexpected value: " + searchEntity.getType());
+            default -> {
+                return userRepository.findAll(GenerateData.generatePageRequest(paginationEntity)).toList();
+            }
         }
     }
 
