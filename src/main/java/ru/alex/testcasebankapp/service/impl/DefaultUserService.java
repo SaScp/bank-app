@@ -1,24 +1,18 @@
 package ru.alex.testcasebankapp.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
+import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
-import ru.alex.testcasebankapp.model.user.Account;
-import ru.alex.testcasebankapp.model.user.Email;
-import ru.alex.testcasebankapp.model.user.Phone;
 import ru.alex.testcasebankapp.model.user.User;
-import ru.alex.testcasebankapp.repository.EmailRepository;
-import ru.alex.testcasebankapp.repository.PhoneRepository;
 import ru.alex.testcasebankapp.repository.UserRepository;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.add.AddComponent;
@@ -32,7 +26,6 @@ import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -179,6 +172,12 @@ public class DefaultUserService implements UserService {
         }
         return true;
     }
+
+    @Override
+    public boolean transfer(Authentication fromAuthentication, AmountEntity amountEntity) {
+        return false;
+    }
+
 
     private void validate(UserDto userDto, BindingResult bindingResult) {
         for (var i : validators) {

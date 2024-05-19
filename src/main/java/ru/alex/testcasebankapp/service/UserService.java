@@ -3,6 +3,7 @@ package ru.alex.testcasebankapp.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
+import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
@@ -27,4 +28,5 @@ public interface UserService {
 
     boolean delete(UserDto userDto, Authentication authentication, BindingResult bindingResult);
 
+    boolean transfer(Authentication fromAuthentication, AmountEntity amountEntity);
 }

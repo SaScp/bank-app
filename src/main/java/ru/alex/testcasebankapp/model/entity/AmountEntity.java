@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AmountEntity {
-    private String card;
+    private String toCard;
     private double amount;
 }

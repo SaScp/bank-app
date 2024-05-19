@@ -32,7 +32,7 @@ public class DefaultTransactionService implements TransactionService {
 
     @Override
     public boolean transferMoney(Authentication fromAuthentication, AmountEntity amountEntity) {
-        String toCard = amountEntity.getCard();
+        String toCard = amountEntity.getToCard();
         double amount = amountEntity.getAmount();
         Account account = userService.findByLogin(fromAuthentication.getName()).getAccount();
         return Boolean.TRUE.equals(jdbcTemplate.execute((Connection connection) -> {
