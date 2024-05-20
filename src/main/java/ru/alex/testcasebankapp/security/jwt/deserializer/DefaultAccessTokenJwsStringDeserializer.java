@@ -6,6 +6,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import ru.alex.testcasebankapp.model.entity.Token;
+import ru.alex.testcasebankapp.util.exception.DeserializationException;
 
 
 import java.text.ParseException;
@@ -32,7 +33,7 @@ public class DefaultAccessTokenJwsStringDeserializer implements AccessTokenJwsSt
                         claimsSet.getExpirationTime().toInstant());
             }
         } catch (ParseException | JOSEException e) {
-           log.error(e.getMessage(), e);
+
         }
         return null;
     }

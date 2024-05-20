@@ -1,6 +1,10 @@
+jwt:
+  secret:
+    access: '{"kty" : "oct", "k" : "hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+    refresh: '{"kty" : "oct", "k" : "956PBFst1FguLr5irJD-aQ"}'
 spring:
   config:
-    import: optional:file:.properties[.env]
+    import: optional:file:.env[.properties]
   sql:
     init:
       mode: always
@@ -9,7 +13,7 @@ spring:
   application:
     name: test-case-bank-app
   datasource:
-    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DATABASE}
+    url: jdbc:postgresql://${HOST}:${PORT}/${POSTGRES_DATABASE}
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -20,12 +24,16 @@ spring:
       username: ${MONGO_USERNAME}
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}?authSource=admin
       authentication-database: admin
+  docker:
+    compose:
+      profiles:
+        active: dev
 logging:
   file:
-    name: logging-file.log
-  level:
-    org.springframework.security: trace
-jwt:
-  secret:
-    access: '{"kty" : "oct", "k" : "hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
-    refresh: '{"kty" : "oct", "k" : "956PBFst1FguLr5irJD-aQ"}'
+    name: log/app.log
+    path: /
+springdoc:
+  swagger-ui:
+    path: /swagger-doc/swagger-ui.html
+  api-docs:
+    path:  /swagger-doc/api-docs

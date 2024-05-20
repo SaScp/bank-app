@@ -28,10 +28,6 @@ public class EmailValidator implements DataValidator {
         UserDto userDto = (UserDto) target;
         if (Optional.ofNullable(userDto.getEmails()).isPresent()) {
             for (var i : userDto.getEmails()) {
-                if (i.getEmail().equals(i.getOldEmail())) {
-                    errors.rejectValue("emails", "400", "emails equal");
-                    return;
-                }
                 if (Optional.ofNullable(i.getEmail()).isPresent() &&
                         emailRepository.findByEmail(i.getEmail()).isPresent()) {
                     errors.rejectValue("emails", "500", "The user with this email already exists");

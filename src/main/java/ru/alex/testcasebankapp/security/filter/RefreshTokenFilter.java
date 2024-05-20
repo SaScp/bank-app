@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class RefreshTokenFilter extends OncePerRequestFilter {
 
-    private RequestMatcher requestMatcher = new AntPathRequestMatcher("v1/jwt/refresh", HttpMethod.POST.name());
+    private RequestMatcher requestMatcher = new AntPathRequestMatcher("/v1/jwt/refresh", HttpMethod.POST.name());
 
     private SecurityContextRepository securityContextRepository = new RequestAttributeSecurityContextRepository();
 

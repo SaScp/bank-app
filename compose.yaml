@@ -2,6 +2,23 @@ networks:
   app-network:
     driver: bridge
 services:
+#################################################active##################################################
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    networks:
+      - app-network
+    depends_on:
+      - db_pg
+      - mongodb
+    env_file:
+      - .env
+    ports:
+      - 80:8080
+    profiles:
+      - main
   db_pg:
     image: postgres:15
     container_name: postgres
@@ -15,8 +32,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - 5433:5432
+    expose:
+      - 5432
+    profiles:
+      - main
   mongodb:
     image: mongo:latest
     container_name: mongo_db
@@ -28,5 +47,41 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+    expose:
+      - 27017
+    profiles:
+      - main
+
+#################################################dev##################################################
+  db_pg_dev:
+    image: postgres:15
+    container_name: postgres_dev
+    networks:
+      - app-network
+    env_file:
+      - .env
+    volumes:
+      - ./src/main/resources:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 5433:5432
+    profiles:
+      - dev
+  mongodb_dev:
+    image: mongo:latest
+    container_name: mongo_db_dev
+    networks:
+      - app-network
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
     ports:
       - 27017:27017
+    profiles:
+      - dev

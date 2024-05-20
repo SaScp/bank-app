@@ -37,7 +37,8 @@ public class GlobalAdviceController {
             BadCredentialsException.class,
             LastElementException.class,
             InsufficientFundsException.class,
-            TransactionNotFoundException.class
+            TransactionNotFoundException.class,
+
     })
     public ResponseEntity<ProblemDetail> exHandler(RuntimeException e) {
         ProblemDetail problemDetail = handlerStrategy.get(e.getClass()).execute(e);

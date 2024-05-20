@@ -27,10 +27,6 @@ public class PhoneValidator implements DataValidator {
         UserDto userDto = (UserDto) target;
         if (Optional.ofNullable(userDto.getPhones()).isPresent()) {
             for (var i : userDto.getPhones()) {
-                if(i.getPhone().equals(i.getOldPhone())) {
-                    errors.rejectValue("phones", "400", "phones equal");
-                    return;
-                }
                 if (Optional.ofNullable(i.getPhone()).isPresent() &&
                         phoneRepository.findByPhone(i.getPhone()).isPresent()) {
                     errors.rejectValue("phones", "500", "The user with this phone already exists");

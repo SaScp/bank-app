@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class JwtLogoutFilter extends OncePerRequestFilter {
 
-    private RequestMatcher requestMatcher = new AntPathRequestMatcher("v1/jwt/logout", HttpMethod.POST.name());
+    private RequestMatcher requestMatcher = new AntPathRequestMatcher("/v1/jwt/logout", HttpMethod.POST.name());
 
     private final SecurityContextRepository securityContextRepository = new RequestAttributeSecurityContextRepository();
 

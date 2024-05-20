@@ -101,10 +101,22 @@ public class UserController {
         return transactionService.transferMoney(authentication, request);
     }
 
+    @Operation(summary = "Получение транзакции по Id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 в случае если перевод успешен"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Возвращает 404 в случае если транзакция не существует",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
     @GetMapping("/transaction")
     public JsonNode findById(@RequestParam("transaction-id") String transactionId) {
             return transactionService.getTransactionById(transactionId);
-
     }
 
     @Operation(summary = "Поиск пользователей",
@@ -172,10 +184,10 @@ public class UserController {
         return transactionService.getUserTransaction(authentication);
     }
 
-    @Operation(summary = "Просмотр истории транзакций пользователя",
+    @Operation(summary = "Обновление почты или телефона",
             responses = {@ApiResponse(
                     responseCode = "200",
-                    description = "Возвращает 200 и историю транзакций, если транзакций нету, то вернет пустой список"
+                    description = "Возвращает 200 если обновление произошло успешно"
             ),
                     @ApiResponse(
                             responseCode = "403",
@@ -183,7 +195,7 @@ public class UserController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Возвращает 400 если у пользователя остался только 1 почта или телефон"
+                            description = "Возвращает 400 если почта или телефон уже существуют"
                     )
             }
     )
@@ -207,7 +219,7 @@ public class UserController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Возвращает 400 если у пользователя остался только 1 почта или телефон"
+                            description = "Возвращает 400 если почта или телефон уже существуют"
                     )
             }
     )
