@@ -2,6 +2,7 @@ package ru.alex.testcasebankapp.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.alex.testcasebankapp.model.group.Login;
@@ -30,6 +31,7 @@ public class UserAdminDto {
 
     @Schema(example = "31213@gmail.com",  description = "должна быть уникальная почта")
     @JsonProperty("email")
+    @Email
     @NotNull(groups = {Registration.class})
     private String email;
 
