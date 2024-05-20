@@ -1,6 +1,6 @@
 package ru.alex.testcasebankapp.util.exception.handler;
 
-import io.lettuce.core.dynamic.annotation.Command;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
