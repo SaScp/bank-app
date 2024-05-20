@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -20,8 +21,11 @@ import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.util.SearchParam;
+import ru.alex.testcasebankapp.util.exception.TransactionException;
+import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -82,19 +86,25 @@ public class UserController {
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Возвращает 403 если пользователь не авторизован"
+                            description = "Возвращает 403 если пользователь не авторизован",
+                            content = @Content(schema = @Schema(hidden = true))
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Возвращает 400 в случае если у пользователя остался 1 телефон или почта"
+                            description = "Возвращает 400 в случае если у пользователя остался 1 телефон или почта",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             }
     )
     @PostMapping("/transfer")
-    public ResponseEntity<Void> transfer(Authentication authentication, @RequestBody AmountEntity request) {
-        return ResponseEntity
-                .status(transactionService.transferMoney(authentication, request) ? 200 : 400)
-                .build();
+    public UUID transfer(Authentication authentication, @RequestBody AmountEntity request) {
+        return transactionService.transferMoney(authentication, request);
+    }
+
+    @GetMapping("/transaction")
+    public JsonNode findById(@RequestParam("transaction-id") String transactionId) {
+            return transactionService.getTransactionById(transactionId);
+
     }
 
     @Operation(summary = "Поиск пользователей",
@@ -157,17 +167,12 @@ public class UserController {
                             content = @Content(schema = @Schema(hidden = true))
                     )}
     )
-    @GetMapping("/transaction")
+    @GetMapping("/transactions")
     public List<JsonNode> getTransaction(Authentication authentication) {
         return transactionService.getUserTransaction(authentication);
     }
 
     @Operation(summary = "Просмотр истории транзакций пользователя",
-            parameters = @Parameter(
-                    name = "UserDto",
-                    description = "объект который хранит в себе почту и телефон для обновление"
-                    , required = true
-            ),
             responses = {@ApiResponse(
                     responseCode = "200",
                     description = "Возвращает 200 и историю транзакций, если транзакций нету, то вернет пустой список"

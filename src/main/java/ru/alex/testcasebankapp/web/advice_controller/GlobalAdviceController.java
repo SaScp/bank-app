@@ -36,7 +36,8 @@ public class GlobalAdviceController {
             UsernameNotFoundException.class,
             BadCredentialsException.class,
             LastElementException.class,
-            InsufficientFundsException.class
+            InsufficientFundsException.class,
+            TransactionNotFoundException.class
     })
     public ResponseEntity<ProblemDetail> exHandler(RuntimeException e) {
         ProblemDetail problemDetail = handlerStrategy.get(e.getClass()).execute(e);

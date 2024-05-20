@@ -12,9 +12,11 @@ import ru.alex.testcasebankapp.service.JwtService;
 import ru.alex.testcasebankapp.service.RegistrationService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.util.exception.RegistrationException;
+import ru.alex.testcasebankapp.util.validator.AuthValidator;
 import ru.alex.testcasebankapp.util.validator.impl.UserValidator;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,13 +26,13 @@ public class DefaultRegistrationService implements RegistrationService {
 
     private final UserService userService;
 
-    private final UserValidator validators;
+    private final List<AuthValidator> validators;
 
     private final JwtService jwtService;
 
 
     public DefaultRegistrationService(UserService userService,
-                                      UserValidator validators,
+                                      List<AuthValidator>validators,
                                       JwtService jwtService) {
         this.userService = userService;
         this.validators = validators;
@@ -39,7 +41,9 @@ public class DefaultRegistrationService implements RegistrationService {
 
     @Override
     public Tokens registration(UserDto userDto, BindingResult bindingResult) {
-        validators.validate(userDto, bindingResult);
+        for (var i : validators) {
+            i.validate(userDto, bindingResult);
+        }
 
         if (bindingResult.hasErrors()) {
             log.error("::RegistrationException::\"user not registration because: {} \"", bindingResult.getFieldError().getDefaultMessage());

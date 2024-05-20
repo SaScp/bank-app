@@ -3,13 +3,14 @@ package ru.alex.testcasebankapp.util.validator.impl;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import ru.alex.testcasebankapp.model.dto.UserDto;
+import ru.alex.testcasebankapp.util.validator.AuthValidator;
 import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 import java.util.Optional;
 
 
 @Component
-public class PasswordValidator implements DataValidator {
+public class PasswordValidator implements DataValidator, AuthValidator {
     private final static String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
 
 

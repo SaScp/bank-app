@@ -5,9 +5,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.repository.UserRepository;
+import ru.alex.testcasebankapp.util.validator.AuthValidator;
 
 @Component
-public class UserValidator implements Validator {
+public class UserValidator implements AuthValidator {
 
     private final UserRepository userRepository;
 

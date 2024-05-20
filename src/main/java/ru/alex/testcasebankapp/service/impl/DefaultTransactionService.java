@@ -14,6 +14,7 @@ import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
 import ru.alex.testcasebankapp.util.exception.InsufficientFundsException;
 import ru.alex.testcasebankapp.util.exception.TransactionException;
+import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;
 
 
 import java.sql.*;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class DefaultTransactionService implements TransactionService {
+
 
     private UserService userService;
 
@@ -34,19 +36,26 @@ public class DefaultTransactionService implements TransactionService {
     }
 
     @Override
-    public boolean transferMoney(Authentication fromAuthentication, AmountEntity amountEntity) {
+    public UUID transferMoney(Authentication fromAuthentication, AmountEntity amountEntity) {
         String toCard = amountEntity.getToCard();
         double amount = amountEntity.getAmount();
         Account account = userService.findByLogin(fromAuthentication.getName()).getAccount();
         return transactionTransfer(account.getCard(), toCard, amount);
     }
 
-    public boolean transactionTransfer(String fromCard, String toCard, double amount) {
-        return Boolean.TRUE.equals(jdbcTemplate.execute((Connection connection) -> {
+    public UUID transactionTransfer(String fromCard, String toCard, double amount) {
+
+        return jdbcTemplate.execute((Connection connection) -> {
             try (PreparedStatement ps1 = connection.prepareStatement("SELECT current_balance FROM bank_api.t_account WHERE card = ?");
                  PreparedStatement ps2 = connection.prepareStatement("UPDATE bank_api.t_account SET current_balance = ? WHERE card = ?");
                  PreparedStatement transaction = connection.prepareStatement("INSERT INTO bank_api.t_transaction (id, from_user_card, to_user_card, amount, created_at) VALUES (?, ?, ?, ?, ?)")) {
                 connection.setAutoCommit(false);
+                if (amount <= 0) {
+                    throw new RuntimeException("Transfer amount must be positive or not equals 0");
+                }
+                if (fromCard.equals(toCard)) {
+                    throw new RuntimeException("Cannot transfer to the same account");
+                }
 
                 // Get balance of sender
                 ps1.setString(1, fromCard);
@@ -92,7 +101,7 @@ public class DefaultTransactionService implements TransactionService {
 
                 connection.commit();
                 log.info("transaction with id: {} registration!", transactionId);
-                return true;
+                return transactionId;
             } catch (Exception e) {
                 try {
                     connection.rollback();
@@ -102,8 +111,18 @@ public class DefaultTransactionService implements TransactionService {
                 log.error("::TransactionException:: \"transaction failed, error message: {}\"", e.getMessage());
                 throw new TransactionException(e.getMessage());
             }
-        }));
+        });
     }
+
+    @Override
+    public JsonNode getTransactionById(String id) {
+        try {
+        return jdbcTemplate.queryForObject("SELECT * FROM bank_api.t_transaction where id=?", new JsonNodeRowMapper(), UUID.fromString(id));
+    } catch (Exception e) {
+        throw new TransactionNotFoundException("not found");
+    }
+    }
+
 
     public List<JsonNode> getAllTransactions() {
         return jdbcTemplate.query("SELECT * FROM bank_api.t_transaction ORDER BY created_at DESC", new JsonNodeRowMapper());
@@ -121,5 +140,21 @@ public class DefaultTransactionService implements TransactionService {
     public void updateBalance() {
         jdbcTemplate
                 .update("UPDATE bank_api.t_account SET current_balance = current_balance + (current_balance * 0.05) WHERE current_balance < initial_deposit * 2.07");
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 }
