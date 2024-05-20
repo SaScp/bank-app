@@ -43,7 +43,7 @@ public class GenerateData {
         }).toList();
     }
 
-    public static Account generateAccountEntity(User user, int currentBalance) {
+    public static Account generateAccountEntity(User user, double currentBalance) {
         return Account.builder()
                 .card(generateNumberCard())
                 .user(user)

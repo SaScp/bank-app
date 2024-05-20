@@ -73,7 +73,6 @@ public class SecurityConfiguration {
                         .hasRole("USER")
         );
 
-
         http.sessionManagement(httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

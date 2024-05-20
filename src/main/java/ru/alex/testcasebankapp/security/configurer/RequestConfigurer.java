@@ -49,19 +49,12 @@ public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer,
     public void configure(HttpSecurity builder) throws Exception {
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager,
-                new JwtAuthenticationConverter(refreshTokenJwsStringDeserializer, accessTokenJwsStringDeserializer));
-        authenticationFilter.setSuccessHandler((request, response, authentication) -> CsrfFilter.skipRequest(request));
-        authenticationFilter.setFailureHandler(new AuthenticationEntryPointFailureHandler(((request, response, authException) -> response.sendError(HttpStatus.FORBIDDEN.value()))));
+        AuthenticationFilter authenticationFilter = getAuthenticationFilter(authenticationManager);
         PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(new TokenAuthUserDetailsService(this.logoutRepository));
 
-        RefreshTokenFilter refreshTokenFilter = new RefreshTokenFilter();
-        refreshTokenFilter.setAccessTokenJwsStringSerializer(accessTokenJwsStringSerializer);
-        refreshTokenFilter.setRefreshTokenJweStringSerializer(refreshTokenJweStringSerializer);
-
+        RefreshTokenFilter refreshTokenFilter = getRefreshTokenFilter(accessTokenJwsStringSerializer, refreshTokenJweStringSerializer);
         JwtLogoutFilter jwtLogoutFilter =  new JwtLogoutFilter(this.logoutRepository);
-
         DeniedRequestFilter deniedRequestFilter = new DeniedRequestFilter();
 
         builder.addFilterBefore(authenticationFilter, CsrfFilter.class)
@@ -69,7 +62,24 @@ public class RequestConfigurer extends AbstractHttpConfigurer<RequestConfigurer,
                 .addFilterAfter(jwtLogoutFilter, ExceptionTranslationFilter.class)
                 .addFilterBefore(deniedRequestFilter, DisableEncodeUrlFilter.class)
                 .authenticationProvider(authenticationProvider);
+
         log.info("configure {} successful", this.getClass());
+    }
+
+    private RefreshTokenFilter getRefreshTokenFilter(AccessTokenJwsStringSerializer accessTokenJwsStringSerializer,
+                                                     RefreshTokenJweStringSerializer refreshTokenJweStringSerializer) {
+        RefreshTokenFilter refreshTokenFilter = new RefreshTokenFilter();
+        refreshTokenFilter.setAccessTokenJwsStringSerializer(accessTokenJwsStringSerializer);
+        refreshTokenFilter.setRefreshTokenJweStringSerializer(refreshTokenJweStringSerializer);
+        return refreshTokenFilter;
+    }
+
+    private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager,
+                new JwtAuthenticationConverter(refreshTokenJwsStringDeserializer, accessTokenJwsStringDeserializer));
+        authenticationFilter.setSuccessHandler((request, response, authentication) -> CsrfFilter.skipRequest(request));
+        authenticationFilter.setFailureHandler(new AuthenticationEntryPointFailureHandler(((request, response, authException) -> response.sendError(HttpStatus.FORBIDDEN.value()))));
+        return authenticationFilter;
     }
 
     public RequestConfigurer accessTokenJwsStringSerializer(AccessTokenJwsStringSerializer accessTokenJwsStringSerializer) {

@@ -1,6 +1,5 @@
 package ru.alex.testcasebankapp.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -19,6 +18,7 @@ import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.add.AddComponent;
 import ru.alex.testcasebankapp.service.delete.DeleteComponent;
 import ru.alex.testcasebankapp.service.update.UpdateComponent;
+import ru.alex.testcasebankapp.util.Constant.*;
 import ru.alex.testcasebankapp.util.exception.SavedException;
 import ru.alex.testcasebankapp.util.exception.UpdateException;
 import ru.alex.testcasebankapp.util.generator.GenerateData;
@@ -27,6 +27,8 @@ import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static ru.alex.testcasebankapp.util.Constant.DEFAULT_BALANCE;
 
 @Slf4j
 @Service
@@ -47,10 +49,14 @@ public class DefaultUserService implements UserService {
 
     private List<DeleteComponent> deleteComponents;
 
+
     public DefaultUserService(UserRepository userRepository,
                               ModelMapper modelMapper,
-                              PasswordEncoder passwordEncoder, List<DataValidator> validators,
-                              List<UpdateComponent> updateComponents, List<AddComponent> addComponents, List<DeleteComponent> deleteComponents) {
+                              PasswordEncoder passwordEncoder,
+                              List<DataValidator> validators,
+                              List<UpdateComponent> updateComponents,
+                              List<AddComponent> addComponents,
+                              List<DeleteComponent> deleteComponents) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
@@ -89,7 +95,7 @@ public class DefaultUserService implements UserService {
 
         user.setPhones(GenerateData.generatePhoneEntities(user.getPhones(), user));
         user.setEmails(GenerateData.generateEmailEntities(user.getEmails(), user));
-        user.setAccount(GenerateData.generateAccountEntity(user, 50));
+        user.setAccount(GenerateData.generateAccountEntity(user, DEFAULT_BALANCE));
 
         userRepository.save(user);
 
@@ -101,7 +107,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<User> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity) {
-        switch (searchEntity.getType()) {
+        switch (searchEntity.chooseType()) {
             case EMAIL -> {
                 return List.of(userRepository.findByEmailsIn(searchEntity.getEmail())
                         .orElseThrow(() -> new UsernameNotFoundException("user not found")));
@@ -113,12 +119,12 @@ public class DefaultUserService implements UserService {
             case FULLNAME -> {
                 return userRepository.findAllByFullNameIsLike(searchEntity.getFullName(),
                                 GenerateData.generatePageRequest(paginationEntity))
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new UsernameNotFoundException("user not found"));
             }
             case DATE -> {
                 return userRepository.findAllByDataOfBirthGreaterThan(searchEntity.getDate(),
                                 GenerateData.generatePageRequest(paginationEntity))
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new UsernameNotFoundException("user not found"));
             }
             default -> {
                 return userRepository.findAll(GenerateData.generatePageRequest(paginationEntity)).toList();
@@ -176,10 +182,6 @@ public class DefaultUserService implements UserService {
         return true;
     }
 
-    @Override
-    public boolean transfer(Authentication fromAuthentication, AmountEntity amountEntity) {
-        return false;
-    }
 
 
     private void validate(UserDto userDto, BindingResult bindingResult) {

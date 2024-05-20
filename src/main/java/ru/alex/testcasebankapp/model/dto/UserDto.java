@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.alex.testcasebankapp.model.group.Login;
 import ru.alex.testcasebankapp.model.group.Registration;
 
@@ -13,6 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "обьект для взаимодействия с пользователем")
 public class UserDto {
 
@@ -26,6 +32,7 @@ public class UserDto {
     private String password;
 
 
+    @JsonProperty("full_name")
     @Schema(example = "Ivan ivanich")
     @NotNull(groups = {Registration.class})
     private String fullName;
@@ -33,6 +40,7 @@ public class UserDto {
 
     @Schema(example = "2024-05-17T18:29:34.123Z")
     @NotNull(groups = {Registration.class})
+    @JsonProperty("data_of_Birth")
     private LocalDateTime dataOfBirth;
 
     @Schema(description = "каждая почта должна быть уникальна")

@@ -6,6 +6,5 @@ import ru.alex.testcasebankapp.model.response.Tokens;
 
 
 public interface RegistrationService {
-
     Tokens registration(UserDto userDto, BindingResult bindingResult);
 }

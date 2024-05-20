@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 

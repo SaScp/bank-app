@@ -1,5 +1,6 @@
 package ru.alex.testcasebankapp.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import ru.alex.testcasebankapp.model.SearchType;
@@ -16,13 +17,14 @@ public class SearchEntity {
     @Schema(example = "+79991112211", description = "параметр для поиска по 100% сходству по телефону")
     private String phone;
 
+    @JsonProperty("full_name")
     @Schema(example = "i%", description = "параметр для поиска всех элементов по шаблону")
     private String fullName;
 
     @Schema(example = "1111111@gmail.com", description = "параметр для поиска по 100% сходству по почте")
     private String email;
 
-    public SearchType getType() {
+    public SearchType chooseType() {
         if (Optional.ofNullable(this.email).isPresent()) {
             return SearchType.EMAIL;
         }

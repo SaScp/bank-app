@@ -5,6 +5,5 @@ import ru.alex.testcasebankapp.model.response.Tokens;
 
 
 public interface JwtService {
-
     Tokens createTokens(final Authentication authentication);
 }

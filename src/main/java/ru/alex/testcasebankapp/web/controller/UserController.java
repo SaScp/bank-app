@@ -105,7 +105,9 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Возвращает 200 в случае если перевод успешен"
+                            description = "Возвращает 200 в случае если перевод успешен",
+
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = JsonNode.class))
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -116,7 +118,7 @@ public class UserController {
     )
     @GetMapping("/transaction")
     public JsonNode findById(@RequestParam("transaction-id") String transactionId) {
-            return transactionService.getTransactionById(transactionId);
+        return transactionService.getTransactionById(transactionId);
     }
 
     @Operation(summary = "Поиск пользователей",
@@ -165,14 +167,15 @@ public class UserController {
 
 
     @Operation(summary = "Просмотр истории транзакций пользователя",
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает 200 и историю транзакций, если транзакций нету, то вернет пустой список",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = JsonNode.class)
-                    )
-            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 и историю транзакций, если транзакций нету, то вернет пустой список",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = JsonNode.class)
+                            )
+                    ),
                     @ApiResponse(
                             responseCode = "403",
                             description = "Возвращает 403 если пользователь не авторизован",
@@ -185,10 +188,11 @@ public class UserController {
     }
 
     @Operation(summary = "Обновление почты или телефона",
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает 200 если обновление произошло успешно"
-            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 если обновление произошло успешно"
+                    ),
                     @ApiResponse(
                             responseCode = "403",
                             description = "Возвращает 403 если пользователь не авторизован"
@@ -209,10 +213,11 @@ public class UserController {
     }
 
     @Operation(summary = "добавляет почту или телефон",
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает 200 и добавляет телефон или почту пользователя"
-            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 и добавляет телефон или почту пользователя"
+                    ),
                     @ApiResponse(
                             responseCode = "403",
                             description = "Возвращает 403 если пользователь не авторизован"

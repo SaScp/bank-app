@@ -43,7 +43,7 @@ public class AdminController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Возвращает 400 если не удалось создать ползьователя"
+                            description = "Возвращает 400 если не удалось создать пользователя"
                     )
             }
     )

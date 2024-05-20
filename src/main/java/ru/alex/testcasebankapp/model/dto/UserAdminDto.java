@@ -19,7 +19,7 @@ public class UserAdminDto {
     @NotNull(groups = {Registration.class})
     private String login;
 
-
+    @JsonProperty("init_balance")
     @Schema(example = "150.0")
     @NotNull(groups = {Registration.class})
     private int initBalance;

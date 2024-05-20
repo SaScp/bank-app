@@ -9,9 +9,14 @@ import java.util.UUID;
 
 public interface TransactionService {
     UUID transferMoney(Authentication fromAuthentication, AmountEntity amountEntity);
+
     void updateBalance();
+
     List<JsonNode> getAllTransactions();
+
     List<JsonNode> getUserTransaction(Authentication authentication);
+
     UUID transactionTransfer(String fromCard, String toCard, double amount);
+
     JsonNode getTransactionById(String id);
 }

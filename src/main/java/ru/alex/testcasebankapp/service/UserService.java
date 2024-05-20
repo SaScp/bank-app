@@ -28,5 +28,4 @@ public interface UserService {
 
     boolean delete(UserDto userDto, Authentication authentication, BindingResult bindingResult);
 
-    boolean transfer(Authentication fromAuthentication, AmountEntity amountEntity);
 }

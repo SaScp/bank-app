@@ -1,5 +1,8 @@
 package ru.alex.testcasebankapp.security.filter;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +26,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.Date;
 
 public class JwtLogoutFilter extends OncePerRequestFilter {
+
 
     private RequestMatcher requestMatcher = new AntPathRequestMatcher("/v1/jwt/logout", HttpMethod.POST.name());
 
