@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -45,22 +44,30 @@ public class UserController {
     }
 
     @Operation(summary = "Позволяет получить данные пользователя с помощью токена аунтификации",
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "get data by id",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class)
-                    )
-            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "получение авторизованного пользователя",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserDto.class)
+                            )
+                    ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Возвращает 403 если пользователь не авторизован"
+                            description = "Возвращает 403 если пользователь не авторизован",
+                            content = @Content(
+                                    schema = @Schema(hidden = true)
+                            )
                     ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Возвращает 404 если пользователь не найден"
-            )}
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Возвращает 404 если пользователь не найден",
+                            content = @Content(
+                                    schema = @Schema(hidden = true)
+                            )
+                    )
+            }
     )
     @GetMapping("/")
     public UserDto findById(Authentication authentication) {
@@ -68,18 +75,18 @@ public class UserController {
     }
 
     @Operation(summary = "Перевод денег между счетами",
-            parameters = @Parameter(
-                    name = "AmountEntity",
-                    description = "объект который хранит в себе карту на которую переводят деньги и сумма перевода"
-                    , required = true
-            ),
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает 200 в случае если перевод успешен и 400 если неудачен"
-            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 в случае если перевод успешен"
+                    ),
                     @ApiResponse(
                             responseCode = "403",
                             description = "Возвращает 403 если пользователь не авторизован"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Возвращает 400 в случае если у пользователя остался 1 телефон или почта"
                     )
             }
     )
@@ -90,27 +97,50 @@ public class UserController {
                 .build();
     }
 
-    @Operation(summary = "Перевод денег между счетами",
-            hidden = true,
-            responses = {@ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает 200 и список пользователей, если пользователей нету, то вернет пустой список",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class)
+    @Operation(summary = "Поиск пользователей",
+            parameters = {
+                    @Parameter(
+                            name = "page-size",
+                            description = "параметр для размера вывода всех пользоателей"
+                            , required = true,
+                            allowEmptyValue = true
+                    ),
+                    @Parameter(
+                            name = "page-number",
+                            description = "параметр номера странцы"
+                            , required = true,
+                            allowEmptyValue = true
+                    ),
+                    @Parameter(
+                            name = "sort-param",
+                            description = "параметр сортировки"
+                            , required = true,
+                            allowEmptyValue = true
                     )
-            ),
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает 200 и список пользователей, если пользователей нету, то вернет пустой список",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserDto.class)
+                            )
+                    ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Возвращает 403 если пользователь не авторизован"
-                    )}
+                            description = "Возвращает 403 если пользователь не авторизован",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
     )
-    @GetMapping(value = "/search")
+    @PostMapping(value = "/search")
     public List<UserDto> searchUser(@RequestBody SearchEntity searchEntity,
-                                    @SearchParam PaginationEntity paginationEntity) {
+                                    @Parameter(hidden = true) @SearchParam PaginationEntity paginationEntity) {
         return userService.searchClient(searchEntity, paginationEntity).stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).toList();
     }
+
 
     @Operation(summary = "Просмотр истории транзакций пользователя",
             responses = {@ApiResponse(
@@ -123,7 +153,8 @@ public class UserController {
             ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Возвращает 403 если пользователь не авторизован"
+                            description = "Возвращает 403 если пользователь не авторизован",
+                            content = @Content(schema = @Schema(hidden = true))
                     )}
     )
     @GetMapping("/transaction")
@@ -185,18 +216,9 @@ public class UserController {
     }
 
     @Operation(summary = "Удаляет почту или телефон",
-            parameters = @Parameter(
-                    name = "UserDto",
-                    description = "объект который хранит в себе почту и телефон для удаление"
-                    , required = true
-            ),
             responses = {@ApiResponse(
                     responseCode = "200",
-                    description = "Возвращает 200 и удаляет телефон или почту пользователя",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class)
-                    )
+                    description = "Возвращает 200 и удаляет телефон или почту пользователя"
             ),
                     @ApiResponse(
                             responseCode = "403",

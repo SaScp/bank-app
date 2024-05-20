@@ -49,7 +49,7 @@ public class AuthenticationController {
             ),
             responses = @ApiResponse(
                     responseCode = "200",
-                    description = "user login",
+                    description = "выводит 2 токена и их время валидности",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = Tokens.class)
@@ -68,7 +68,7 @@ public class AuthenticationController {
             ),
             responses = @ApiResponse(
                     responseCode = "200",
-                    description = "user login",
+                    description = "выводит 2 токена и их время валидности",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = Tokens.class)

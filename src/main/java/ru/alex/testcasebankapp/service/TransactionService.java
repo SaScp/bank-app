@@ -11,4 +11,5 @@ public interface TransactionService {
     void updateBalance();
     List<JsonNode> getAllTransactions();
     List<JsonNode> getUserTransaction(Authentication authentication);
+    boolean transactionTransfer(String fromCard, String toCard, double amount);
 }
