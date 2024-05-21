@@ -1,6 +1,8 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -96,7 +98,7 @@ public class DefaultTransactionService implements TransactionService {
 
                 // Insert transaction record
                 UUID transactionId = UUID.randomUUID();
-                transaction.setObject(1,transactionId);
+                transaction.setObject(1, transactionId);
                 transaction.setString(2, fromCard);
                 transaction.setString(3, toCard);
                 transaction.setDouble(4, amount);
@@ -121,10 +123,10 @@ public class DefaultTransactionService implements TransactionService {
     @Override
     public JsonNode getTransactionById(String id) {
         try {
-        return jdbcTemplate.queryForObject(SELECT_TRANSACTION_BY_ID, new JsonNodeRowMapper(), UUID.fromString(id));
-    } catch (Exception e) {
-        throw new TransactionNotFoundException("not found");
-    }
+            return jdbcTemplate.queryForObject(SELECT_TRANSACTION_BY_ID, new JsonNodeRowMapper(), UUID.fromString(id));
+        } catch (Exception e) {
+            throw new TransactionNotFoundException("not found");
+        }
     }
 
 

@@ -16,7 +16,7 @@ public class TestCaseBankAppApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(TestCaseBankAppApplication.class);
-        app.setDefaultProperties(Collections.singletonMap("spring.config.location", "classpath:/application-dev.yaml"));
+        app.setDefaultProperties(Collections.singletonMap("spring.config.location", "classpath:/application.yaml"));
         app.run(args);
     }
 

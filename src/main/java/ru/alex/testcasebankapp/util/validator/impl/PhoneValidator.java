@@ -19,7 +19,7 @@ public class PhoneValidator implements DataValidator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return false;
+        return UserDto.class.equals(clazz);
     }
 
     @Override
