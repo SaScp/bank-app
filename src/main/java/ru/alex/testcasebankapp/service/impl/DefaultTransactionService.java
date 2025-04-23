@@ -44,11 +44,8 @@ public class DefaultTransactionService implements TransactionService {
 
     @Override
     public UUID transferMoney(Authentication fromAuthentication, AmountEntity amountEntity) {
-        String toCard = amountEntity.getToCard();
-        String fromCard = amountEntity.getFromCard();
-        double amount = amountEntity.getAmount();
-        Account account = userService.findAccountByCard(fromAuthentication, fromCard);
-        return transactionTransfer(account.getCard(), toCard, amount);
+        Account account = userService.findAccountByCard(fromAuthentication, amountEntity.getFromCard());
+        return transactionTransfer(account.getCard(), amountEntity.getToCard(), amountEntity.getAmount());
     }
 
     public UUID transactionTransfer(String fromCard, String toCard, double amount) {
