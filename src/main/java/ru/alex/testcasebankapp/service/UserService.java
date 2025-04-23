@@ -7,8 +7,10 @@ import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
+import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.model.user.User;
 
+import javax.smartcardio.Card;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +27,8 @@ public interface UserService {
     boolean update(UserDto userDto, Authentication authentication, BindingResult bindingResult);
 
     boolean add(UserDto userDto, Authentication authentication, BindingResult bindingResult);
+
+    Account findAccountByCard(Authentication authentication, String card);
 
     boolean delete(UserDto userDto, Authentication authentication, BindingResult bindingResult);
 

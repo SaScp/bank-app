@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.user.Account;
+import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
@@ -44,8 +45,9 @@ public class DefaultTransactionService implements TransactionService {
     @Override
     public UUID transferMoney(Authentication fromAuthentication, AmountEntity amountEntity) {
         String toCard = amountEntity.getToCard();
+        String fromCard = amountEntity.getFromCard();
         double amount = amountEntity.getAmount();
-        Account account = userService.findByLogin(fromAuthentication.getName()).getAccount();
+        Account account = userService.findAccountByCard(fromAuthentication, fromCard);
         return transactionTransfer(account.getCard(), toCard, amount);
     }
 
@@ -63,7 +65,6 @@ public class DefaultTransactionService implements TransactionService {
                     throw new RuntimeException("Cannot transfer to the same account");
                 }
 
-                // Get balance of sender
                 ps1.setString(1, fromCard);
                 ResultSet rs = ps1.executeQuery();
                 if (!rs.next()) {
@@ -77,12 +78,10 @@ public class DefaultTransactionService implements TransactionService {
                     throw new InsufficientFundsException("insufficient funds");
                 }
 
-                // Update balance of sender
                 ps2.setDouble(1, fromUserBalance - amount);
                 ps2.setString(2, fromCard);
                 ps2.executeUpdate();
 
-                // Get balance of receiver
                 ps1.setString(1, toCard);
                 rs = ps1.executeQuery();
                 if (!rs.next()) {
@@ -91,12 +90,11 @@ public class DefaultTransactionService implements TransactionService {
                 }
                 double toUserBalance = rs.getDouble(1);
 
-                // Update balance of receiver
+
                 ps2.setDouble(1, amount + toUserBalance);
                 ps2.setString(2, toCard);
                 ps2.executeUpdate();
 
-                // Insert transaction record
                 UUID transactionId = UUID.randomUUID();
                 transaction.setObject(1, transactionId);
                 transaction.setString(2, fromCard);
@@ -135,8 +133,8 @@ public class DefaultTransactionService implements TransactionService {
     }
 
     @Override
-    public List<JsonNode> getUserTransaction(Authentication authentication) {
-        String card = userService.findByLogin(authentication.getName()).getAccount().getCard();
+    public List<JsonNode> getUserTransactionByCard(Authentication authentication, String currentCard) {
+        String card = userService.findAccountByCard(authentication, currentCard).getCard();
         return jdbcTemplate.query(SELECT_TRANSACTION_BY_FROM_USER_CARD_OR_TO_USER_CARD, new JsonNodeRowMapper(), card, card);
     }
 

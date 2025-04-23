@@ -106,7 +106,7 @@ public class DefaultAdminService implements AdminService {
         user.setPhones(GenerateData.generatePhoneEntities(List.of(Phone.builder()
                 .phone(userAdminDto.getPhone()).build()), user));
 
-        user.setAccount(GenerateData.generateAccountEntity(user, userAdminDto.getInitBalance() > 0? userAdminDto.getInitBalance() : DEFAULT_BALANCE));
+        user.setAccounts(GenerateData.generateAccountEntity(user, userAdminDto.getInitBalance() > 0? userAdminDto.getInitBalance() : DEFAULT_BALANCE));
         return user;
     }
 

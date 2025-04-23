@@ -28,7 +28,7 @@ public class Account {
     @Column(name = "current_balance")
     private double currentBalance;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

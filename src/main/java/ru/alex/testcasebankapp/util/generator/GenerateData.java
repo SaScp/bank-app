@@ -43,13 +43,13 @@ public class GenerateData {
         }).toList();
     }
 
-    public static Account generateAccountEntity(User user, double currentBalance) {
-        return Account.builder()
+    public static Set<Account> generateAccountEntity(User user, double currentBalance) {
+        return Set.of(Account.builder()
                 .card(generateNumberCard())
                 .user(user)
                 .currentBalance(currentBalance)
                 .initialDeposit(currentBalance)
-                .build();
+                .build());
     }
 
     public static String generateNumberCard() {

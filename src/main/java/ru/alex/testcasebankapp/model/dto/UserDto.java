@@ -14,6 +14,7 @@ import ru.alex.testcasebankapp.model.group.Registration;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -55,5 +56,5 @@ public class UserDto {
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private AccountDto account;
+    private Set<AccountDto> account;
 }

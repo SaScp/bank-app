@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -21,10 +20,9 @@ import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.util.SearchParam;
-import ru.alex.testcasebankapp.util.exception.TransactionException;
-import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -183,8 +181,8 @@ public class UserController {
                     )}
     )
     @GetMapping("/transactions")
-    public List<JsonNode> getTransaction(Authentication authentication) {
-        return transactionService.getUserTransaction(authentication);
+    public List<JsonNode> getTransaction(Authentication authentication, @RequestParam(value = "card") String params) {
+        return transactionService.getUserTransactionByCard(authentication,params);
     }
 
     @Operation(summary = "Обновление почты или телефона",

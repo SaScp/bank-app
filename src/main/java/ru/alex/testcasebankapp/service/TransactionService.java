@@ -14,7 +14,7 @@ public interface TransactionService {
 
     List<JsonNode> getAllTransactions();
 
-    List<JsonNode> getUserTransaction(Authentication authentication);
+    List<JsonNode> getUserTransactionByCard(Authentication authentication, String card);
 
     UUID transactionTransfer(String fromCard, String toCard, double amount);
 

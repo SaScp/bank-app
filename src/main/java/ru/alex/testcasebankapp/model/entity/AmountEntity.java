@@ -7,10 +7,15 @@ import lombok.Data;
 @Data
 public class AmountEntity {
 
+    @JsonProperty("from_card")
+    @Schema(example = "0971093327478357")
+    private String fromCard;
+
     @JsonProperty("to_card")
     @Schema(example = "0971093327478357")
-
     private String toCard;
+
+
     @Schema(example = "150.0")
     private double amount;
 }

@@ -12,6 +12,7 @@ import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.entity.SearchEntity;
 import ru.alex.testcasebankapp.model.dto.UserDto;
+import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.UserRepository;
 import ru.alex.testcasebankapp.service.UserService;
@@ -20,6 +21,7 @@ import ru.alex.testcasebankapp.service.delete.DeleteComponent;
 import ru.alex.testcasebankapp.service.update.UpdateComponent;
 import ru.alex.testcasebankapp.util.Constant.*;
 import ru.alex.testcasebankapp.util.exception.SavedException;
+import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;
 import ru.alex.testcasebankapp.util.exception.UpdateException;
 import ru.alex.testcasebankapp.util.generator.GenerateData;
 import ru.alex.testcasebankapp.util.validator.DataValidator;
@@ -27,6 +29,7 @@ import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.alex.testcasebankapp.util.Constant.DEFAULT_BALANCE;
 
@@ -95,7 +98,7 @@ public class DefaultUserService implements UserService {
 
         user.setPhones(GenerateData.generatePhoneEntities(user.getPhones(), user));
         user.setEmails(GenerateData.generateEmailEntities(user.getEmails(), user));
-        user.setAccount(GenerateData.generateAccountEntity(user, DEFAULT_BALANCE));
+        user.setAccounts(GenerateData.generateAccountEntity(user, DEFAULT_BALANCE));
 
         userRepository.save(user);
 
@@ -168,6 +171,18 @@ public class DefaultUserService implements UserService {
             i.execute(userDto, user);
         }
         return true;
+    }
+
+    @Override
+    public Account findAccountByCard(Authentication authentication, String card) {
+        User user = findByLogin(authentication.getName());
+
+        return user.getAccounts()
+                .stream()
+                .filter(e -> e.getCard().equals(card))
+                .reduce((e, a) -> {
+                    throw new UsernameNotFoundException("user not found");
+                }).orElseThrow(() -> new TransactionNotFoundException("transaction not found"));
     }
 
     @Override
