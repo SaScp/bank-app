@@ -1,20 +1,15 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import ru.alex.testcasebankapp.model.dto.EmailDto;
-import ru.alex.testcasebankapp.model.dto.PhoneDto;
 import ru.alex.testcasebankapp.model.dto.UserAdminDto;
-import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.response.Tokens;
-import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.Phone;
 import ru.alex.testcasebankapp.model.user.User;
@@ -23,11 +18,10 @@ import ru.alex.testcasebankapp.repository.PhoneRepository;
 import ru.alex.testcasebankapp.repository.UserRepository;
 import ru.alex.testcasebankapp.service.AdminService;
 import ru.alex.testcasebankapp.service.JwtService;
-import ru.alex.testcasebankapp.util.exception.LoginException;
 import ru.alex.testcasebankapp.util.exception.SavedException;
 import ru.alex.testcasebankapp.util.generator.GenerateData;
+import ru.alex.testcasebankapp.util.mapper.UserMapper;
 import ru.alex.testcasebankapp.util.validator.AuthValidator;
-import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +35,6 @@ import static ru.alex.testcasebankapp.util.Constant.DEFAULT_BALANCE;
 @Service
 public class DefaultAdminService implements AdminService {
 
-    private final ModelMapper modelMapper;
 
     private UserRepository userRepository;
 
@@ -57,7 +50,6 @@ public class DefaultAdminService implements AdminService {
 
     public DefaultAdminService(UserRepository userRepository,
                                JwtService jwtService,
-                               ModelMapper modelMapper,
                                PasswordEncoder passwordEncoder,
                                EmailRepository emailRepository,
                                PhoneRepository phoneRepository,
@@ -65,7 +57,6 @@ public class DefaultAdminService implements AdminService {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
-        this.modelMapper = modelMapper;
         this.emailRepository = emailRepository;
         this.phoneRepository = phoneRepository;
         this.validators = validators;
@@ -74,7 +65,7 @@ public class DefaultAdminService implements AdminService {
     @Override
     public Tokens create(UserAdminDto userAdminDto, BindingResult bindingResult) {
 
-        UserDto userDto = UserDto.builder()
+        ru.alex.testcasebankapp.model.dto.UserDto userDto = ru.alex.testcasebankapp.model.dto.UserDto.builder()
                 .login(userAdminDto.getLogin())
                 .password(userAdminDto.getPassword())
                 .build();
@@ -93,25 +84,25 @@ public class DefaultAdminService implements AdminService {
     }
 
     private User generate(UserAdminDto userAdminDto) {
-        User user = modelMapper.map(userAdminDto, User.class);
-        user.setRole("ROLE_USER");
-        user.setFullName(userAdminDto.getLogin());
-        user.setDataOfBirth(LocalDateTime.now());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User userDto = UserMapper.INSTANCE.fromAdminDto(userAdminDto);
+        userDto.setRole("ROLE_USER");
+        userDto.setFullName(userAdminDto.getLogin());
+        userDto.setDataOfBirth(LocalDateTime.now());
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
 
-        user.setEmails(GenerateData.generateEmailEntities(List.of(Email.builder()
-                .email(userAdminDto.getEmail()).build()), user));
+        userDto.setEmails(GenerateData.generateEmailEntities(Set.of(Email.builder()
+                .email(userAdminDto.getEmail()).build()), userDto));
 
-        user.setPhones(GenerateData.generatePhoneEntities(List.of(Phone.builder()
-                .phone(userAdminDto.getPhone()).build()), user));
+        userDto.setPhones(GenerateData.generatePhoneEntities(Set.of(Phone.builder()
+                .phone(userAdminDto.getPhone()).build()), userDto));
 
-        user.setAccounts(GenerateData.generateAccountEntity(user, userAdminDto.getInitBalance() > 0? userAdminDto.getInitBalance() : DEFAULT_BALANCE));
-        return user;
+        userDto.setAccounts(GenerateData.generateAccountEntity(userDto, userAdminDto.getInitBalance() > 0? userAdminDto.getInitBalance() : DEFAULT_BALANCE));
+        return userDto;
     }
 
 
-    private void validate(UserDto userDto, UserAdminDto userAdminDto, BindingResult bindingResult) {
+    private void validate(ru.alex.testcasebankapp.model.dto.UserDto userDto, UserAdminDto userAdminDto, BindingResult bindingResult) {
         for (var i : validators) {
             i.validate(userDto, bindingResult);
         }

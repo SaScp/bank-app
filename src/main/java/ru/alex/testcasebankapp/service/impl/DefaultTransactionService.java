@@ -1,8 +1,6 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -11,11 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.alex.testcasebankapp.model.entity.AmountEntity;
 import ru.alex.testcasebankapp.model.user.Account;
-import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.service.TransactionService;
 import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.rowmapper.JsonNodeRowMapper;
-import ru.alex.testcasebankapp.util.Constant.*;
 import ru.alex.testcasebankapp.util.exception.InsufficientFundsException;
 import ru.alex.testcasebankapp.util.exception.TransactionException;
 import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;

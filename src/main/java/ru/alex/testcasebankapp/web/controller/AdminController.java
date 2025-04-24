@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -65,4 +66,11 @@ public class AdminController {
     public List<JsonNode> getTransaction() {
         return transactionService.getAllTransactions();
     }
+
+
+    @PostMapping("/create_service")
+    public ResponseEntity<Void> createService() {
+
+    }
+
 }

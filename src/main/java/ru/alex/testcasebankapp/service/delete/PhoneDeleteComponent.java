@@ -1,10 +1,7 @@
 package ru.alex.testcasebankapp.service.delete;
 
 import org.springframework.stereotype.Component;
-import ru.alex.testcasebankapp.model.dto.EmailDto;
 import ru.alex.testcasebankapp.model.dto.PhoneDto;
-import ru.alex.testcasebankapp.model.dto.UserDto;
-import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.Phone;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.PhoneRepository;
@@ -22,19 +19,19 @@ public class PhoneDeleteComponent implements DeleteComponent {
     }
 
     @Override
-    public void execute(UserDto updateUserDto, User user) {
+    public void execute(ru.alex.testcasebankapp.model.dto.UserDto updateUserDtoDto, User userDto) {
         List<UUID> idDeletePhones = new ArrayList<>();
-        if (Optional.ofNullable(updateUserDto.getPhones()).isPresent()) {
-            if (user.getPhones().size() == 1) {
+        if (Optional.ofNullable(updateUserDtoDto.getPhones()).isPresent()) {
+            if (userDto.getPhones().size() == 1) {
                 throw new LastElementException("user must be 1 phone!");
             }
-            List<String> phones = updateUserDto.getPhones().stream()
+            List<String> phones = updateUserDtoDto.getPhones().stream()
                     .map(PhoneDto::getPhone)
                     .filter(Objects::nonNull)
                     .toList();
 
             if (!phones.isEmpty()) {
-                List<Phone> phoneEntities = phoneRepository.findAllByPhoneInAndUser(phones, user);
+                List<Phone> phoneEntities = phoneRepository.findAllByPhoneInAndUser(phones, userDto);
                 idDeletePhones = phoneEntities.stream()
                         .map(Phone::getId)
                         .toList();

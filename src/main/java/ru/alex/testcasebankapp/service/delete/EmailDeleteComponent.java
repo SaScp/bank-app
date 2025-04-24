@@ -2,7 +2,6 @@ package ru.alex.testcasebankapp.service.delete;
 
 import org.springframework.stereotype.Component;
 import ru.alex.testcasebankapp.model.dto.EmailDto;
-import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.EmailRepository;
@@ -21,19 +20,19 @@ public class EmailDeleteComponent implements DeleteComponent{
     }
 
     @Override
-    public void execute(UserDto updateUserDto, User user) {
+    public void execute(ru.alex.testcasebankapp.model.dto.UserDto updateUserDtoDto, User userDto) {
         List<UUID> idDeleteEmails = new ArrayList<>();
-        if (Optional.ofNullable(updateUserDto.getEmails()).isPresent()) {
-            if (user.getEmails().size() == 1) {
+        if (Optional.ofNullable(updateUserDtoDto.getEmails()).isPresent()) {
+            if (userDto.getEmails().size() == 1) {
                 throw new LastElementException("user must be 1 email!");
             }
-            List<String> emails = updateUserDto.getEmails().stream()
+            List<String> emails = updateUserDtoDto.getEmails().stream()
                     .map(EmailDto::getEmail)
                     .filter(Objects::nonNull)
                     .toList();
 
             if (!emails.isEmpty()) {
-                List<Email> emailEntities = emailRepository.findAllByEmailInAndUser(emails, user);
+                List<Email> emailEntities = emailRepository.findAllByEmailInAndUser(emails, userDto);
                 idDeleteEmails = emailEntities.stream()
                         .map(Email::getId)
                         .toList();

@@ -56,5 +56,5 @@ public class UserDto {
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Set<AccountDto> account;
+    private Set<AccountDto> accounts;
 }

@@ -1,7 +1,6 @@
 package ru.alex.testcasebankapp.service.add;
 
 import org.springframework.stereotype.Component;
-import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Email;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.EmailRepository;
@@ -18,11 +17,11 @@ public class EmailAddComponent implements AddComponent {
     }
 
     @Override
-    public void execute(UserDto updateUserDto, User user) {
-        if (Optional.ofNullable(updateUserDto.getEmails()).isPresent()) {
-            emailRepository.saveAll(updateUserDto.getEmails().stream()
+    public void execute(ru.alex.testcasebankapp.model.dto.UserDto updateUserDtoDto, User userDto) {
+        if (Optional.ofNullable(updateUserDtoDto.getEmails()).isPresent()) {
+            emailRepository.saveAll(updateUserDtoDto.getEmails().stream()
                     .filter(emailDto -> Optional.ofNullable(emailDto.getEmail()).isPresent())
-                    .map(el -> Email.builder().email(el.getEmail()).user(user).build()).toList());
+                    .map(el -> Email.builder().email(el.getEmail()).user(userDto).build()).toList());
         }
     }
 }

@@ -1,6 +1,6 @@
 package ru.alex.testcasebankapp.config;
 
-import org.modelmapper.ModelMapper;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -16,9 +16,5 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
         resolvers.add(new SearchParamResolver(false));
     }
 
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
 
 }

@@ -12,7 +12,7 @@ import java.util.Collection;
 @Builder
 public class DefaultUserDetails implements UserDetails {
 
-    private User user;
+    private User userDto;
 
     private Collection<SimpleGrantedAuthority> authorities;
 
@@ -23,12 +23,12 @@ public class DefaultUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userDto.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getLogin();
+        return userDto.getLogin();
     }
 
     @Override

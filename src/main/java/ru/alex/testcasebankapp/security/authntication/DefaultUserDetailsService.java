@@ -28,7 +28,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
         }
         return DefaultUserDetails
                 .builder()
-                .user(user)
+                .userDto(user)
                 .authorities(Collections
                         .singleton(new SimpleGrantedAuthority(user.getRole())))
                 .build();

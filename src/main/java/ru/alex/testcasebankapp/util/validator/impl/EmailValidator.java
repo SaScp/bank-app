@@ -3,7 +3,6 @@ package ru.alex.testcasebankapp.util.validator.impl;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import ru.alex.testcasebankapp.model.dto.UserDto;
-import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.EmailRepository;
 import ru.alex.testcasebankapp.util.validator.DataValidator;
 

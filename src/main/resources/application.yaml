@@ -26,6 +26,8 @@ spring:
     compose:
       profiles:
         active: dev
+  jpa:
+    show-sql: true
 logging:
   file:
     name: log/app.log

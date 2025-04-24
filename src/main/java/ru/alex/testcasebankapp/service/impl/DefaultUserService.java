@@ -1,17 +1,16 @@
 package ru.alex.testcasebankapp.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import ru.alex.testcasebankapp.model.entity.AmountEntity;
+import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.entity.PaginationEntity;
 import ru.alex.testcasebankapp.model.entity.SearchEntity;
-import ru.alex.testcasebankapp.model.dto.UserDto;
 import ru.alex.testcasebankapp.model.user.Account;
 import ru.alex.testcasebankapp.model.user.User;
 import ru.alex.testcasebankapp.repository.UserRepository;
@@ -19,17 +18,16 @@ import ru.alex.testcasebankapp.service.UserService;
 import ru.alex.testcasebankapp.service.add.AddComponent;
 import ru.alex.testcasebankapp.service.delete.DeleteComponent;
 import ru.alex.testcasebankapp.service.update.UpdateComponent;
-import ru.alex.testcasebankapp.util.Constant.*;
 import ru.alex.testcasebankapp.util.exception.SavedException;
 import ru.alex.testcasebankapp.util.exception.TransactionNotFoundException;
 import ru.alex.testcasebankapp.util.exception.UpdateException;
 import ru.alex.testcasebankapp.util.generator.GenerateData;
+import ru.alex.testcasebankapp.util.mapper.UserMapper;
 import ru.alex.testcasebankapp.util.validator.DataValidator;
 
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static ru.alex.testcasebankapp.util.Constant.DEFAULT_BALANCE;
 
@@ -40,7 +38,6 @@ public class DefaultUserService implements UserService {
 
     private UserRepository userRepository;
 
-    private ModelMapper modelMapper;
 
     private PasswordEncoder passwordEncoder;
 
@@ -54,14 +51,12 @@ public class DefaultUserService implements UserService {
 
 
     public DefaultUserService(UserRepository userRepository,
-                              ModelMapper modelMapper,
                               PasswordEncoder passwordEncoder,
                               List<DataValidator> validators,
                               List<UpdateComponent> updateComponents,
                               List<AddComponent> addComponents,
                               List<DeleteComponent> deleteComponents) {
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.validators = validators;
         this.updateComponents = updateComponents;
@@ -83,13 +78,13 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public Map<String, String> save(UserDto userDto, BindingResult bindingResult) {
+    public Map<String, String> save(ru.alex.testcasebankapp.model.dto.UserDto userDto, BindingResult bindingResult) {
         validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
             log.error("::SavedException:: \"user not saved because: {}\"", bindingResult.getFieldError().getDefaultMessage());
             throw new SavedException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        User user = modelMapper.map(userDto, User.class);
+        User user = UserMapper.INSTANCE.fromDto(userDto);
 
         user.setRole("ROLE_USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -109,7 +104,11 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<User> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity) {
+    public List<UserDto> searchClient(SearchEntity searchEntity, PaginationEntity paginationEntity) {
+        return UserMapper.INSTANCE.toDtos(getUsers(searchEntity, paginationEntity));
+    }
+
+    private List<User> getUsers(SearchEntity searchEntity, PaginationEntity paginationEntity) {
         switch (searchEntity.chooseType()) {
             case EMAIL -> {
                 return List.of(userRepository.findByEmailsIn(searchEntity.getEmail())
@@ -120,24 +119,22 @@ public class DefaultUserService implements UserService {
                         .orElseThrow(() -> new UsernameNotFoundException("user not found")));
             }
             case FULLNAME -> {
-                return userRepository.findAllByFullNameIsLike(searchEntity.getFullName(),
-                                GenerateData.generatePageRequest(paginationEntity))
-                        .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                return userRepository.findAllById(userRepository.findAllByFullNameIsLikeId(searchEntity.getFullName(),
+                                GenerateData.generatePageRequest(paginationEntity)));
             }
             case DATE -> {
-                return userRepository.findAllByDataOfBirthGreaterThan(searchEntity.getDate(),
-                                GenerateData.generatePageRequest(paginationEntity))
-                        .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                return userRepository.findAllById(userRepository.findAllByDataOfBirthGreaterThanId(searchEntity.getDate(),
+                                GenerateData.generatePageRequest(paginationEntity)));
             }
             default -> {
-                return userRepository.findAll(GenerateData.generatePageRequest(paginationEntity)).toList();
+                return userRepository.findAllById(userRepository.findAllId(GenerateData.generatePageRequest(paginationEntity)));
             }
         }
     }
 
     @Override
     @Transactional
-    public boolean update(UserDto userDto,
+    public boolean update(ru.alex.testcasebankapp.model.dto.UserDto userDto,
                           Authentication authentication,
                           BindingResult bindingResult) {
 
@@ -157,7 +154,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public boolean add(UserDto userDto,
+    public boolean add(ru.alex.testcasebankapp.model.dto.UserDto userDto,
                        Authentication authentication,
                        BindingResult bindingResult) {
         validate(userDto, bindingResult);
@@ -175,9 +172,9 @@ public class DefaultUserService implements UserService {
 
     @Override
     public Account findAccountByCard(Authentication authentication, String card) {
-        User user = findByLogin(authentication.getName());
+        User userDto = findByLogin(authentication.getName());
 
-        return user.getAccounts()
+        return userDto.getAccounts()
                 .stream()
                 .filter(e -> e.getCard().equals(card))
                 .reduce((e, a) -> {
@@ -187,7 +184,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public boolean delete(UserDto userDto, Authentication authentication, BindingResult bindingResult) {
+    public boolean delete(ru.alex.testcasebankapp.model.dto.UserDto userDto, Authentication authentication, BindingResult bindingResult) {
 
         User user = findByLogin(authentication.getName());
 
@@ -199,7 +196,7 @@ public class DefaultUserService implements UserService {
 
 
 
-    private void validate(UserDto userDto, BindingResult bindingResult) {
+    private void validate(ru.alex.testcasebankapp.model.dto.UserDto userDto, BindingResult bindingResult) {
         for (var i : validators) {
             i.validate(userDto, bindingResult);
         }

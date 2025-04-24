@@ -15,8 +15,8 @@ public interface EmailRepository extends JpaRepository<Email, UUID> {
 
     Optional<Email> findByEmail(String email);
 
-    Optional<Email> findByEmailAndUser(String email, User user);
+    Optional<Email> findByEmailAndUser(String email, User userDto);
 
-    List<Email> findAllByEmailInAndUser(List<String> emails, User user);
+    List<Email> findAllByEmailInAndUser(List<String> emails, User userDto);
 
 }

@@ -29,24 +29,24 @@ public class GenerateData {
         }
     }
 
-    public static List<Email> generateEmailEntities(List<Email> emails, User user) {
+    public static Set<Email> generateEmailEntities(Set<Email> emails, User userDto) {
         return emails.stream().map(email -> {
-            email.setUser(user);
+            email.setUser(userDto);
             return email;
-        }).toList();
+        }).collect(Collectors.toSet());
     }
 
-    public static List<Phone> generatePhoneEntities(List<Phone> phones, User user) {
+    public static Set<Phone> generatePhoneEntities(Set<Phone> phones, User userDto) {
         return phones.stream().map(email -> {
-            email.setUser(user);
+            email.setUser(userDto);
             return email;
-        }).toList();
+        }).collect(Collectors.toSet());
     }
 
-    public static Set<Account> generateAccountEntity(User user, double currentBalance) {
+    public static Set<Account> generateAccountEntity(User userDto, double currentBalance) {
         return Set.of(Account.builder()
                 .card(generateNumberCard())
-                .user(user)
+                .user(userDto)
                 .currentBalance(currentBalance)
                 .initialDeposit(currentBalance)
                 .build());
