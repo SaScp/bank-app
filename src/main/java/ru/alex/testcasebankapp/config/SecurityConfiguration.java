@@ -67,10 +67,12 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/v1/auth/**", "/v1/admin/**", "/swagger-doc/**")
+                        .requestMatchers("/v1/auth/**", "/swagger-doc/**")
                         .permitAll()
+                        .requestMatchers("/v1/admin/**")
+                        .hasRole("ADMIN")
                         .anyRequest()
-                        .hasRole("USER")
+                        .hasAnyRole("USER", "ADMIN")
         );
 
         http.sessionManagement(httpSecuritySessionManagementConfigurer ->
@@ -79,7 +81,7 @@ public class SecurityConfiguration {
 
         http.apply(requestConfigurer);
 
-        log.info("configure {} successful", this.getClass());
+        log.info("configure {} successful", this.getClass().getName());
         return http.build();
     }
 
