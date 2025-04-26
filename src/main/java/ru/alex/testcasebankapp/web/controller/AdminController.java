@@ -1,6 +1,7 @@
 package ru.alex.testcasebankapp.web.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +18,7 @@ import ru.alex.testcasebankapp.service.TransactionService;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/v1/admin")
 public class AdminController {

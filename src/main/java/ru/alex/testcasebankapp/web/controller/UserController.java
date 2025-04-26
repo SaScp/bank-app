@@ -1,6 +1,7 @@
 package ru.alex.testcasebankapp.web.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +30,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")
+
 @Tag(name = "User Service", description = "User Service")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
@@ -101,6 +103,8 @@ public class UserController {
         return transactionService.transferMoney(authentication, request);
     }
 
+
+    @Hidden
     @Operation(summary = "Получение транзакции по Id",
             responses = {
                     @ApiResponse(
@@ -121,6 +125,7 @@ public class UserController {
         return transactionService.getTransactionById(transactionId);
     }
 
+    @Hidden
     @Operation(summary = "Поиск пользователей",
             parameters = {
                     @Parameter(
@@ -166,6 +171,7 @@ public class UserController {
     }
 
 
+    @Hidden
     @Operation(summary = "Просмотр истории транзакций пользователя",
             responses = {
                     @ApiResponse(

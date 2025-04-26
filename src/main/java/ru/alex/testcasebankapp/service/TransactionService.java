@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface TransactionService {
     UUID transferMoney(Authentication fromAuthentication, AmountEntity amountEntity);
 
-    void updateBalance();
+    //void updateBalance();
 
     List<JsonNode> getAllTransactions();
 

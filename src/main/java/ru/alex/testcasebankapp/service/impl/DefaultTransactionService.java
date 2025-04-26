@@ -141,12 +141,12 @@ public class DefaultTransactionService implements TransactionService {
     }
 
 
-    @Scheduled(fixedRate = 60000)
+    /*@Scheduled(fixedRate = 60000)
     @Async
     public void updateBalance() {
         jdbcTemplate
                 .update(UPDATE_ALL_BALANCE_ON_FIVE_PROCENT);
-    }
+    }*/
 
     public UserService getUserService() {
         return userService;
